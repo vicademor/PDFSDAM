@@ -1,0 +1,303 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+header {
+    background-color: orange;
+    padding: 20px 20px;
+    position: fixed;
+    top: 0;
+    left: 220px;  /* espacio para la sidebar */
+    right: 254px; /* espacio para el índice */
+    text-align: center;
+    width: auto;
+    z-index: 500;
+}
+
+
+header h1 {
+    font-size: 2.5rem;
+    color: whitesmoke;
+    margin: 0;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: white;
+    margin: 10px 0 0 0;
+    font-weight: bold;
+}
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: orange;
+    color: white;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+
+.sidebar li {
+    margin: 1rem 0;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.sidebar a:hover {
+    background-color: orangered;
+}
+
+/* Contenido centrado */
+.content {
+    flex: 1;
+    padding: 140px 2rem 2rem 2rem;
+    max-width: 900px; /* ancho máximo del contenido */
+    margin-left: 240px; /* espacio para sidebar */
+    margin-right: 240px; /* espacio para índice a la derecha */
+    transition: margin-left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Índice fijo a la derecha */
+#index-fixed {
+    position: fixed;
+    top: 0; /* empieza desde arriba */
+    right: 0;
+    width: 220px; /* igual que la sidebar si quieres simetría */
+    height: 100vh; /* ocupar toda la altura */
+    padding: 2rem 1rem;
+    background-color: #fff;
+    border-left: 2px solid orange;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    overflow-y: auto; /* para scroll si hay muchos elementos */
+}
+
+/* Botón toggle */
+#toggleSidebar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Cambiar color de todos los enlaces */
+.content a {
+    color: orange;
+    text-decoration: none;
+}
+
+.content a:hover {
+    color: orangered;
+    text-decoration: underline;
+}
+
+/* Sidebar oculta */
+.sidebar.hide {
+    transform: translateX(-100%);
+}
+
+body, p, li, h1, h2, h3, h4, h5, h6 {
+    line-height: 1.6;
+    font-weight: bold;
+}
+
+/* Tarjetas para archivos */
+.card, .topic-card {
+    background-color: orange;
+    color: white !important;
+    padding: 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    flex: 0 1 200px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.card:hover, .topic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.section-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Overlay para el modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* Caja modal */
+.modal {
+    background-color: white;
+    color: #333;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    text-align: left;
+    position: relative;
+}
+/* Botón cerrar */
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+/* --- ESTILO EXTRA PARA EL INICIO --- */
+.welcome {
+    background: linear-gradient(135deg, orange, orangered);
+    padding: 2rem;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+
+    position: relative;               /* mantener en flujo normal */
+    margin-left: -53px;               /* espacio para el sidebar */
+    margin-right: 0px;                  /* nada a la derecha */
+    width: calc(100vw - 219px);       /* ancho dinámico desde sidebar hasta el borde derecho */
+    box-sizing: border-box;           /* incluye padding en el ancho */
+    display: flex;                  /* Flexbox */
+    flex-direction: column;         /* columna vertical */
+    justify-content: center;        /* centra verticalmente */
+    align-items: center;            /* centra horizontalmente */
+    min-height: 200px;
+}
+
+.welcome-inner {
+    max-width: 900px; /* ancho del contenido dentro del fondo */
+    width: 100%;
+}
+
+.welcome h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.welcome p {
+    font-weight: normal;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: white;
+    color: orangered;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: #ffe0d1;
+}
+
+/* Sección de proyectos personales */
+.personal-projects h2 {
+    margin-bottom: 1rem;
+}
+
+.project-cards {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.project-cards .card {
+    background: orange;
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 220px;
+    transition: 0.2s;
+}
+
+.project-cards .card:hover {
+    transform: translateY(-3px);
+}
+
+.project-cards .card a {
+    color: white;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* Móvil: sidebar sobre contenido */
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+
+    .content {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #index-fixed {
+        display: none;
+    }
+}

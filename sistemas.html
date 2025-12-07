@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFSDAM - Sistemas Informáticos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="icon.png">
+</head>
+<body>
+<button id="toggleSidebar">☰ Categorías</button>
+
+<div class="container">
+    <!-- Sidebar izquierda -->
+    <nav class="sidebar" id="sidebar">
+        <h2><br></h2>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="programacion.html">Programación</a></li>
+            <li><a href="sistemas.html" class="active">Sistemas Informáticos</a></li>
+            <li><a href="bases.html">Bases de Datos</a></li>
+            <li><a href="entornos.html">Entornos de Desarrollo</a></li>
+            <li><a href="lenguajes.html">Lenguajes de Marcas</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="content">
+        <header>
+            <h1 style="color:whitesmoke">PDFSDAM - Sistemas Informáticos</h1>
+            <p style="color: white"><b>Todos los recursos de Sistemas Informáticos en un solo lugar</b></p>
+        </header>
+
+        <!-- Índice derecho fijo -->
+        <aside id="index-fixed">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#resumenes">Resúmenes</a></li>
+                <li><a href="#ejercicios">Ejercicios</a></li>
+                <li><a href="#links">Páginas de interés</a></li>
+            </ul>
+        </aside>
+
+        <!-- Resúmenes -->
+        <section id="resumenes">
+            <h2>Resúmenes</h2>
+            <div class="section-cards">
+                <div class="topic-card" data-asignatura="sistemas" data-section="resumenes" data-topic="tema1">Tema 1</div>
+                <div class="topic-card" data-asignatura="sistemas" data-section="resumenes" data-topic="tema2">Tema 2</div>
+            </div>
+        </section>
+
+        <!-- Ejercicios -->
+        <section id="ejercicios">
+            <h2>Ejercicios</h2>
+            <div class="section-cards">
+                <div class="topic-card" data-asignatura="sistemas" data-section="ejercicios" data-topic="tema1">Tema 1</div>
+                <div class="topic-card" data-asignatura="sistemas" data-section="ejercicios" data-topic="tema2">Tema 2</div>
+            </div>
+        </section>
+
+        <!-- Links -->
+        <section id="links">
+            <h2>Páginas de interés</h2>
+            <div class="section-cards">
+                <div class="topic-card" data-asignatura="sistemas" data-section="links" data-topic="tema1">Place Holder</div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
