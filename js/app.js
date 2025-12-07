@@ -125,11 +125,11 @@ topicCards.forEach(card => {
         data.forEach(item => {
             const a = document.createElement('a');
             // Ajustar URL para GitHub Pages
-            a.href = `${baseURL}/${item.link}`;
+            a.href = item.link; // "pdfs/Progra/ud01.pdf"
             a.textContent = item.name;
             a.target = '_blank';
             a.className = 'card';
-
+            console.log("Generando enlace:", a.href);
             // Forzar descarga si es .zip o .java
             if (item.link.endsWith('.zip') || item.link.endsWith('.java')) {
                 a.setAttribute('download', '');
