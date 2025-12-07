@@ -3,19 +3,22 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     color: #333;
+    line-height: 1.6;
+    font-weight: bold;
 }
+
+/* Header */
 header {
     background-color: orange;
     padding: 20px 20px;
     position: fixed;
     top: 0;
-    left: 220px;  /* espacio para la sidebar */
-    right: 254px; /* espacio para el índice */
+    left: 220px;  /* espacio para la sidebar en escritorio */
+    right: 254px; /* espacio para el índice en escritorio */
     text-align: center;
     width: auto;
     z-index: 500;
 }
-
 
 header h1 {
     font-size: 2.5rem;
@@ -29,6 +32,8 @@ header p {
     margin: 10px 0 0 0;
     font-weight: bold;
 }
+
+/* Layout */
 .container {
     display: flex;
     min-height: 100vh;
@@ -48,20 +53,7 @@ header p {
     position: fixed;
     top: 0;
     left: 0;
-}
-
-.sidebar h2 {
-    margin-top: 0;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0 0 0;
-}
-
-.sidebar li {
-    margin: 1rem 0;
+    z-index: 1000;
 }
 
 .sidebar a {
@@ -77,13 +69,13 @@ header p {
     background-color: orangered;
 }
 
-/* Contenido centrado */
+/* Content */
 .content {
     flex: 1;
     padding: 140px 2rem 2rem 2rem;
-    max-width: 900px; /* ancho máximo del contenido */
+    max-width: 900px;
     margin-left: 240px; /* espacio para sidebar */
-    margin-right: 240px; /* espacio para índice a la derecha */
+    margin-right: 240px; /* espacio para índice */
     transition: margin-left 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -92,15 +84,26 @@ header p {
 /* Índice fijo a la derecha */
 #index-fixed {
     position: fixed;
-    top: 0; /* empieza desde arriba */
+    top: 0;
     right: 0;
-    width: 220px; /* igual que la sidebar si quieres simetría */
-    height: 100vh; /* ocupar toda la altura */
+    width: 220px;
+    height: 100vh;
     padding: 2rem 1rem;
     background-color: #fff;
     border-left: 2px solid orange;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    overflow-y: auto; /* para scroll si hay muchos elementos */
+    overflow-y: auto;
+}
+
+#index-fixed a {
+    color: orange;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#index-fixed a:hover {
+    color: orangered;
+    text-decoration: underline;
 }
 
 /* Botón toggle */
@@ -118,28 +121,7 @@ header p {
     cursor: pointer;
 }
 
-/* Cambiar color de todos los enlaces */
-.content a {
-    color: orange;
-    text-decoration: none;
-}
-
-.content a:hover {
-    color: orangered;
-    text-decoration: underline;
-}
-
-/* Sidebar oculta */
-.sidebar.hide {
-    transform: translateX(-100%);
-}
-
-body, p, li, h1, h2, h3, h4, h5, h6 {
-    line-height: 1.6;
-    font-weight: bold;
-}
-
-/* Tarjetas para archivos */
+/* Tarjetas */
 .card, .topic-card {
     background-color: orange;
     color: white !important;
@@ -162,7 +144,7 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     gap: 1rem;
 }
 
-/* Overlay para el modal */
+/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -176,7 +158,6 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     z-index: 2000;
 }
 
-/* Caja modal */
 .modal {
     background-color: white;
     color: #333;
@@ -190,7 +171,7 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     text-align: left;
     position: relative;
 }
-/* Botón cerrar */
+
 .modal-close {
     position: absolute;
     top: 10px;
@@ -199,39 +180,27 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     font-weight: bold;
 }
-/* --- ESTILO EXTRA PARA EL INICIO --- */
+
+/* Welcome */
 .welcome {
     background: linear-gradient(135deg, orange, orangered);
     padding: 2rem;
     border-radius: 12px;
     color: white;
     text-align: center;
-
-    position: relative;               /* mantener en flujo normal */
-    margin-left: -53px;               /* espacio para el sidebar */
-    margin-right: 0px;                  /* nada a la derecha */
-    width: calc(100vw - 219px);       /* ancho dinámico desde sidebar hasta el borde derecho */
-    box-sizing: border-box;           /* incluye padding en el ancho */
-    display: flex;                  /* Flexbox */
-    flex-direction: column;         /* columna vertical */
-    justify-content: center;        /* centra verticalmente */
-    align-items: center;            /* centra horizontalmente */
+    margin-left: -53px;
+    width: calc(100vw - 219px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     min-height: 200px;
 }
 
 .welcome-inner {
-    max-width: 900px; /* ancho del contenido dentro del fondo */
+    max-width: 900px;
     width: 100%;
-}
-
-.welcome h2 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-}
-
-.welcome p {
-    font-weight: normal;
-    margin-bottom: 1rem;
 }
 
 .btn-primary {
@@ -249,11 +218,7 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     background: #ffe0d1;
 }
 
-/* Sección de proyectos personales */
-.personal-projects h2 {
-    margin-bottom: 1rem;
-}
-
+/* Proyectos */
 .project-cards {
     display: flex;
     gap: 1rem;
@@ -279,25 +244,39 @@ body, p, li, h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
 }
 
-/* Móvil: sidebar sobre contenido */
+/* --- Responsive --- */
 @media (max-width: 1024px) {
     .container {
         flex-direction: column;
     }
 
     .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1000;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.hide {
+        transform: translateX(-100%);
     }
 
     .content {
         margin-left: 0;
         margin-right: 0;
+        max-width: 100%;
+        padding: 100px 1rem 1rem 1rem;
+    }
+
+    header {
+        left: 0;
+        right: 0;
+        width: 100%;
     }
 
     #index-fixed {
         display: none;
+    }
+
+    .welcome {
+        margin-left: 0;
+        width: 100%;
     }
 }

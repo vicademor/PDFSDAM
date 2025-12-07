@@ -20,14 +20,14 @@ const baseURL = "https://vicademor.github.io/PDFSDAM";
 const asignaturas = {
     programacion: {
         resumenes: {
-            tema1: [{ name: 'Teoría T1', link: 'pdfs/progra/ud01.pdf' }],
-            tema2: [{ name: 'Teoría T2', link: 'pdfs/progra/ud02.pdf' }],
+            tema1: [{ name: 'Teoría T1', link: 'pdfs/Progra/ud01.pdf' }],
+            tema2: [{ name: 'Teoría T2', link: 'pdfs/Progra/ud02.pdf' }],
             tema3: [
-                { name: 'Teoría T3', link: 'pdfs/progra/ud03.pdf' },
-                { name: 'Teoría Algoritmos', link: 'pdfs/progra/ud03-2.pdf' }
+                { name: 'Teoría T3', link: 'pdfs/Progra/ud03.pdf' },
+                { name: 'Teoría Algoritmos', link: 'pdfs/Progra/ud03-2.pdf' }
             ],
-            tema4: [{ name: 'Teoría T4', link: 'pdfs/progra/ud04.pdf' }],
-            tema5: [{ name: 'Teoría T5', link: 'pdfs/progra/ud05.pdf' }]
+            tema4: [{ name: 'Teoría T4', link: 'pdfs/Progra/ud04.pdf' }],
+            tema5: [{ name: 'Teoría T5', link: 'pdfs/Progra/ud05.pdf' }]
         },
         ejercicios: {
             tema1: [
@@ -44,11 +44,14 @@ const asignaturas = {
     },
     sistemas: {
         resumenes: {
-            tema1: [{ name: 'Repaso T1', link: 'pdfs/sistemas/ud01.pdf' }, { name: 'Teoría T1', link: 'pdfs/sistemas/ud01-2.pdf' }],
-            tema2: [{ name: 'Teoría T2', link: 'pdfs/sistemas/ud02.pdf' }],
-            tema3: [{ name: 'Teoría T3', link: 'pdfs/sistemas/ud03.pdf' }],
-            tema4: [{ name: 'Teoría T4', link: 'pdfs/sistemas/ud04.pdf' }],
-            tema5: [{ name: 'Teoría T5', link: 'pdfs/sistemas/ud05.pdf' }]
+            tema1: [
+                { name: 'Repaso T1', link: 'pdfs/Sistemas/ud01.pdf' },
+                { name: 'Teoría T1', link: 'pdfs/Sistemas/ud01-2.pdf' }
+            ],
+            tema2: [{ name: 'Teoría T2', link: 'pdfs/Sistemas/ud02.pdf' }],
+            tema3: [{ name: 'Teoría T3', link: 'pdfs/Sistemas/ud03.pdf' }],
+            tema4: [{ name: 'Teoría T4', link: 'pdfs/Sistemas/ud04.pdf' }],
+            tema5: [{ name: 'Teoría T5', link: 'pdfs/Sistemas/ud05.pdf' }]
         },
         ejercicios: {
             tema1: [{ name: 'Ejercicio 1', link: 'ejer/sistemas/Ejercicios.rar' }],
@@ -59,7 +62,9 @@ const asignaturas = {
         }
     },
     bases: {
-        resumenes: { tema1: [{ name: 'Primer Trimestre', link: 'pdfs/bases/ResumenTrimestre.rar' }] },
+        resumenes: {
+            tema1: [{ name: 'Primer Trimestre', link: 'pdfs/Bases/ResumenTrimestre.rar' }]
+        },
         ejercicios: {
             tema1: [{ name: 'Ejercicio 1', link: 'ejer/bases/Ejercicios.rar' }],
             tema2: [{ name: 'Ejercicio 2', link: 'ejer/bases/Ejercicios.rar' }],
@@ -70,11 +75,17 @@ const asignaturas = {
     },
     entornos: {
         resumenes: {
-            tema1: [{ name: 'Teoría T1', link: 'pdfs/entornos/ud01.pdf' }, { name: 'Teoría T1.2', link: 'pdfs/entornos/ud01-2.pdf' }],
-            tema2: [{ name: 'Teoría T2', link: 'pdfs/entornos/ud02.pdf' }, { name: 'Teoría T2.2', link: 'pdfs/entornos/ud02-2.pdf' }],
-            tema3: [{ name: 'Teoría T3', link: 'pdfs/entornos/ud03.pdf' }],
-            tema4: [{ name: 'Teoría T4', link: 'pdfs/entornos/ud04.pdf' }],
-            tema5: [{ name: 'Teoría T5', link: 'pdfs/entornos/ud05.pdf' }]
+            tema1: [
+                { name: 'Teoría T1', link: 'pdfs/Entornos/ud01.pdf' },
+                { name: 'Teoría T1.2', link: 'pdfs/Entornos/ud01-2.pdf' }
+            ],
+            tema2: [
+                { name: 'Teoría T2', link: 'pdfs/Entornos/ud02.pdf' },
+                { name: 'Teoría T2.2', link: 'pdfs/Entornos/ud02-2.pdf' }
+            ],
+            tema3: [{ name: 'Teoría T3', link: 'pdfs/Entornos/ud03.pdf' }],
+            tema4: [{ name: 'Teoría T4', link: 'pdfs/Entornos/ud04.pdf' }],
+            tema5: [{ name: 'Teoría T5', link: 'pdfs/Entornos/ud05.pdf' }]
         },
         ejercicios: {
             tema1: [{ name: 'Ejercicio 1', link: 'ejer/entornos/Ejercicios.rar' }],
@@ -85,7 +96,9 @@ const asignaturas = {
         }
     },
     lenguajes: {
-        resumenes: { tema1: [{ name: 'Primer Trimestre', link: 'pdfs/lenguajes/PrimerTrimestre.rar' }] },
+        resumenes: {
+            tema1: [{ name: 'Primer Trimestre', link: 'pdfs/Lenguajes/PrimerTrimestre.rar' }]
+        },
         ejercicios: {
             tema1: [{ name: 'Ejercicio 1', link: 'ejer/lenguajes/Ejercicios.rar' }],
             tema2: [{ name: 'Ejercicio 2', link: 'ejer/lenguajes/Ejercicios.rar' }],
@@ -95,6 +108,7 @@ const asignaturas = {
         }
     }
 };
+
 
 // Abrir modal al clicar un tema
 topicCards.forEach(card => {
@@ -133,3 +147,8 @@ modalClose.addEventListener('click', () => (modalOverlay.style.display = 'none')
 modalOverlay.addEventListener('click', e => {
     if (e.target === modalOverlay) modalOverlay.style.display = 'none';
 });
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log("Service Worker registrado"))
+    .catch(err => console.error("Error al registrar SW:", err));
+}
