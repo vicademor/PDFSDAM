@@ -54,6 +54,7 @@ header p {
     top: 0;
     left: 0;
     z-index: 1000;
+    transform: translateX(0); /* visible en escritorio */
 }
 
 .sidebar a {
@@ -251,11 +252,11 @@ header p {
     }
 
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-100%); /* oculta en móvil */
     }
 
-    .sidebar.hide {
-        transform: translateX(-100%);
+    .sidebar.show {
+        transform: translateX(0); /* clase que la muestra */
     }
 
     .content {

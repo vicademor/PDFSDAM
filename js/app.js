@@ -3,7 +3,7 @@ const toggleBtn = document.getElementById('toggleSidebar');
 const sidebar = document.getElementById('sidebar');
 
 toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('hide');
+    sidebar.classList.toggle('show'); // usar la clase .show que definiste en CSS
 });
 
 // Modal
