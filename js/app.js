@@ -13,8 +13,6 @@ const modalContent = document.getElementById('modalContent');
 const modalClose = document.getElementById('modalClose');
 const topicCards = document.querySelectorAll('.topic-card');
 
-// URL base de tu GitHub Pages (pon tu usuario y repo)
-const baseURL = "https://vicademor.github.io/PDFSDAM";
 
 // Datos de todas las asignaturas
 const asignaturas = {
@@ -36,10 +34,10 @@ const asignaturas = {
                 { name: 'Ejercicio 3', link: 'ejer/progra/T1/A3.java' },
                 { name: 'Ejercicio 4', link: 'ejer/progra/T1/A4.java' }
             ],
-            tema2: [{ name: 'Ejercicio 2', link: 'ejer/progra/Ejercicios.rar' }],
-            tema3: [{ name: 'Ejercicio 3', link: 'ejer/progra/Ejercicios.rar' }],
-            tema4: [{ name: 'Ejercicio 4', link: 'ejer/progra/Ejercicios.rar' }],
-            tema5: [{ name: 'Ejercicio 5', link: 'ejer/progra/Ejercicios.rar' }]
+            tema2: [{ name: 'Ejercicio 2', link: 'ejer/progra/T2/Ejercicios.rar' }],
+            tema3: [{ name: 'Ejercicio 3', link: 'ejer/progra/T3/Ejercicios.rar' }],
+            tema4: [{ name: 'Ejercicio 4', link: 'ejer/progra/T4/Ejercicios.rar' }],
+            tema5: [{ name: 'Ejercicio 5', link: 'ejer/progra/T5/Ejercicios.rar' }]
         }
     },
     sistemas: {
