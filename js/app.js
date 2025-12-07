@@ -109,7 +109,7 @@ topicCards.forEach(card => {
         data.forEach(item => {
             const a = document.createElement('a');
             // Ajustar URL para GitHub Pages
-            a.href = `${baseURL}/${item.link}`;
+            a.href = item.link;
             a.textContent = item.name;
             a.target = '_blank';
             a.className = 'card';
