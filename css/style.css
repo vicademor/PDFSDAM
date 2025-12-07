@@ -267,9 +267,20 @@ header p {
     }
 
     header {
+        position: fixed;
+        top: 0;
         left: 0;
         right: 0;
         width: 100%;
+        height: auto;              /* que se adapte al contenido */
+        z-index: 500;
+    }
+    .content {
+        margin-top: 120px;         /* deja hueco para el header en móvil */
+        margin-left: 0;
+        margin-right: 0;
+        max-width: 100%;
+        padding: 1rem;             /* padding normal, sin que se solape */
     }
 
     #index-fixed {
@@ -280,4 +291,11 @@ header p {
         margin-left: 0;
         width: 100%;
     }
+    header h1 {
+        font-size: 1.8rem; /* más pequeño en móvil */
+    }
+    header p {
+        font-size: 1rem;
+    }
+
 }

@@ -152,3 +152,17 @@ if ('serviceWorker' in navigator) {
     .then(() => console.log("Service Worker registrado"))
     .catch(err => console.error("Error al registrar SW:", err));
 }
+function ajustarContenido() {
+    const header = document.querySelector("header");
+    const content = document.querySelector(".content");
+
+    if (window.matchMedia("(max-width: 1024px)").matches) {
+        const headerHeight = header.offsetHeight;
+        content.style.marginTop = headerHeight + "px";
+    } else {
+        content.style.marginTop = "";
+    }
+}
+
+window.addEventListener("load", ajustarContenido);
+window.addEventListener("resize", ajustarContenido);
