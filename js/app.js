@@ -13,6 +13,8 @@ const modalContent = document.getElementById('modalContent');
 const modalClose = document.getElementById('modalClose');
 const topicCards = document.querySelectorAll('.topic-card');
 
+// URL base de tu GitHub Pages (pon tu usuario y repo)
+const baseURL = "https://vicademor.github.io/PDFSDAM";
 
 // Datos de todas las asignaturas
 const asignaturas = {
@@ -109,7 +111,7 @@ topicCards.forEach(card => {
         data.forEach(item => {
             const a = document.createElement('a');
             // Ajustar URL para GitHub Pages
-            a.href = item.link;
+            a.href = `${baseURL}/${item.link}`;
             a.textContent = item.name;
             a.target = '_blank';
             a.className = 'card';
