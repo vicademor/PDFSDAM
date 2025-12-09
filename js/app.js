@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const firebaseConfig = {
         apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
         authDomain: "pdfsdam.firebaseapp.com",
-        databaseURL: "https://pdfsdam-default-rtdb.firebaseio.com",
+        databaseURL: "https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
         projectId: "pdfsdam",
         appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
         measurementId: "G-PXS4C0EZN9"

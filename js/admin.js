@@ -6,7 +6,7 @@ import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/fireba
 const firebaseConfig = {
     apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
     authDomain: "pdfsdam.firebaseapp.com",
-    databaseURL: "https://pdfsdam-default-rtdb.firebaseio.com",
+    databaseURL: "databaseURL: \"https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "pdfsdam",
     appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
     measurementId: "G-PXS4C0EZN9"
@@ -15,9 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
-
-// --- Login anónimo para poder escribir en DB ---
-signInAnonymously(auth).catch(console.error);
 
 // --- Configuración OAuth Google Drive ---
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
@@ -46,6 +43,10 @@ if (accessToken) {
     document.getElementById("uploadSection").style.display = "block";
     document.getElementById("manageSection").style.display = "block";
     cargarListaPDFs();
+} else {
+    status.textContent = "❌ No estás logueado con Google Drive.";
+    return;
+
 }
 
 // Botón login con Google
