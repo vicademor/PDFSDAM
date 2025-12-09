@@ -2,12 +2,25 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
+// Configuración Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
+    authDomain: "pdfsdam.firebaseapp.com",
+    databaseURL: "https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "pdfsdam",
+    appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
+    measurementId: "G-PXS4C0EZN9"
+};
+
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 // Ejecutar todo cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
     // Toggle sidebar
     const toggleBtn = document.getElementById('toggleSidebar');
     const sidebar = document.getElementById('sidebar');
-
     if (toggleBtn && sidebar) {
         toggleBtn.addEventListener('click', () => {
             sidebar.classList.toggle('show');
@@ -20,30 +33,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalContent = document.getElementById('modalContent');
     const modalClose = document.getElementById('modalClose');
 
-    // Inicializar Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
-        authDomain: "pdfsdam.firebaseapp.com",
-        databaseURL: "https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "pdfsdam",
-        appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
-        measurementId: "G-PXS4C0EZN9"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
     // Función para abrir modal
     function abrirModal(asignaturas, card) {
-        const asignatura = card.getAttribute('data-asignatura');
-        const section = card.getAttribute('data-section');
-        const topic = card.getAttribute('data-topic');
+        const asignatura = card.dataset.asignatura;
+        const section = card.dataset.section;
+        const topic = card.dataset.topic;
 
         modalTitle.textContent = card.textContent;
         modalContent.innerHTML = '';
 
         const data = asignaturas[asignatura]?.[section]?.[topic] || [];
-
         if (data.length === 0) {
             modalContent.textContent = "No hay PDFs disponibles para este tema.";
         } else {
@@ -56,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 modalContent.appendChild(a);
             });
         }
-
         modalOverlay.style.display = 'flex';
     }
 
@@ -66,12 +64,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!snapshot.exists()) return;
 
         const data = snapshot.val();
-        Object.entries(data).forEach(([id, pdf]) => {
+        Object.values(data).forEach(pdf => {
             const { asignatura, tipo, tema, nombre, urlPreview } = pdf;
-
             if (!asignaturas[asignatura]) asignaturas[asignatura] = { resumenes: {}, ejercicios: {} };
             if (!asignaturas[asignatura][tipo][tema]) asignaturas[asignatura][tipo][tema] = [];
-
             asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
         });
 
