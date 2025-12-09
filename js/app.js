@@ -71,17 +71,20 @@ document.addEventListener("DOMContentLoaded", () => {
             asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
         });
 
-        // Limpiar y reconstruir cards
+        // Detectar asignatura actual desde el body
+        const asignaturaActual = document.body.dataset.asignatura;
+
+        // Limpiar y reconstruir cards SOLO de la asignatura actual
         ["resumenes", "ejercicios"].forEach(tipo => {
             const section = document.querySelector(`#${tipo} .section-cards`);
             if (!section) return;
             section.innerHTML = "";
 
-            Object.keys(asignaturas).forEach(asig => {
-                Object.keys(asignaturas[asig][tipo]).forEach(tema => {
+            if (asignaturas[asignaturaActual] && asignaturas[asignaturaActual][tipo]) {
+                Object.keys(asignaturas[asignaturaActual][tipo]).forEach(tema => {
                     const card = document.createElement("div");
                     card.className = "topic-card";
-                    card.dataset.asignatura = asig;
+                    card.dataset.asignatura = asignaturaActual;
                     card.dataset.section = tipo;
                     card.dataset.topic = tema;
                     card.textContent = tema;
@@ -89,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     card.onclick = () => abrirModal(asignaturas, card);
                 });
-            });
+            }
         });
     });
 
