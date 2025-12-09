@@ -6,7 +6,7 @@ import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/fireba
 const firebaseConfig = {
     apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
     authDomain: "pdfsdam.firebaseapp.com",
-    databaseURL: "databaseURL: \"https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
+    databaseURL: "https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "pdfsdam",
     appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
     measurementId: "G-PXS4C0EZN9"
