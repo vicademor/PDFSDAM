@@ -17,29 +17,30 @@ const topicCards = document.querySelectorAll('.topic-card');
 const firebaseConfig = {
     apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
     authDomain: "pdfsdam.firebaseapp.com",
+    databaseURL: "https://pdfsdam-default-rtdb.firebaseio.com",
     projectId: "pdfsdam",
-    storageBucket: "pdfsdam.appspot.com",
-    messagingSenderId: "836229684120",
     appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
     measurementId: "G-PXS4C0EZN9"
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db = firebase.database();
 
-// Cargar asignaturas dinámicamente desde Firestore
+// Cargar asignaturas dinámicamente desde Realtime Database
 async function cargarAsignaturas() {
-    const snapshot = await db.collection("pdfs").get();
+    const snapshot = await db.ref("pdfs").once("value");
     const asignaturas = {};
 
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        const { asignatura, tipo, tema, nombre, url } = data;
+    if (!snapshot.exists()) return asignaturas;
+
+    snapshot.forEach(child => {
+        const data = child.val();
+        const { asignatura, tipo, tema, nombre, urlPreview } = data;
 
         if (!asignaturas[asignatura]) asignaturas[asignatura] = { resumenes:{}, ejercicios:{} };
         if (!asignaturas[asignatura][tipo][tema]) asignaturas[asignatura][tipo][tema] = [];
 
-        asignaturas[asignatura][tipo][tema].push({ name: nombre, link: url });
+        asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
     });
 
     return asignaturas;

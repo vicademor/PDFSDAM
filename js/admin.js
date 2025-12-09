@@ -1,35 +1,96 @@
-// Configuración Firebase
+// admin.js
+
+// --- Configuración Firebase ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
     authDomain: "pdfsdam.firebaseapp.com",
+    databaseURL: "https://pdfsdam-default-rtdb.firebaseio.com",
     projectId: "pdfsdam",
-    storageBucket: "pdfsdam.appspot.com",
-    messagingSenderId: "836229684120",
     appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
     measurementId: "G-PXS4C0EZN9"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const storage = firebase.storage();
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-// Login
-document.getElementById("loginBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        document.getElementById("loginStatus").textContent = "Acceso correcto.";
-        document.getElementById("uploadSection").style.display = "block";
-        document.getElementById("manageSection").style.display = "block";
-        cargarListaPDFs();
-    } catch (err) {
-        document.getElementById("loginStatus").textContent = "Error: " + err.message;
-    }
+// --- Login anónimo para poder escribir en DB ---
+signInAnonymously(auth).catch(console.error);
+
+// --- Configuración OAuth Google Drive ---
+const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/drive.file";
+
+function getAuthUrl() {
+    const params = new URLSearchParams({
+        response_type: "token",
+        client_id: GOOGLE_CLIENT_ID,
+        redirect_uri: window.location.origin + window.location.pathname,
+        scope: SCOPES,
+        prompt: "consent"
+    });
+    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+}
+
+function getAccessTokenFromHash() {
+    const h = new URLSearchParams(window.location.hash.slice(1));
+    return h.get("access_token");
+}
+
+let accessToken = getAccessTokenFromHash();
+
+// Botón login con Google
+document.getElementById("loginBtn").addEventListener("click", () => {
+    window.location.href = getAuthUrl();
 });
 
-// Subida de PDFs
+// --- Subida a Drive ---
+async function uploadPdfToDrive(fileBlob, filename) {
+    const metadata = { name: filename, mimeType: "application/pdf" };
+
+    const boundary = "-------3141592653589793";
+    const delimiter = `\r\n--${boundary}\r\n`;
+    const closeDelimiter = `\r\n--${boundary}--`;
+
+    const metadataPart = `${delimiter}Content-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}`;
+    const filePart = `${delimiter}Content-Type: application/pdf\r\n\r\n`;
+
+    const reader = await fileBlob.arrayBuffer();
+    const body = new Blob([metadataPart, filePart, new Uint8Array(reader), closeDelimiter], { type: `multipart/related; boundary=${boundary}` });
+
+    const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${accessToken}` },
+        body
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    return res.json(); // { id, name, ... }
+}
+
+async function makeFilePublic(fileId) {
+    await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ role: "reader", type: "anyone" })
+    });
+}
+
+// --- Guardar metadatos en DB ---
+async function saveMetadata(meta) {
+    const newRef = push(ref(db, "pdfs"));
+    await set(newRef, meta);
+    return newRef.key;
+}
+
+// --- Manejo de subida ---
 const input = document.getElementById("pdfInput");
 const progress = document.getElementById("uploadProgress");
 const status = document.getElementById("uploadStatus");
@@ -47,53 +108,51 @@ input.addEventListener("change", async (e) => {
     const tema = document.getElementById("tema").value;
     const nombre = document.getElementById("nombre").value || file.name;
 
-    const path = `${asignatura}/${tipo}/${tema}/${nombre}.pdf`;
-    const storageRef = storage.ref(path);
+    try {
+        status.textContent = "Subiendo a Drive...";
+        const driveFile = await uploadPdfToDrive(file, nombre);
+        await makeFilePublic(driveFile.id);
 
-    const uploadTask = storageRef.put(file, { contentType: "application/pdf" });
+        const urlPreview = `https://drive.google.com/file/d/${driveFile.id}/preview`;
+        const urlDownload = `https://drive.google.com/uc?export=download&id=${driveFile.id}`;
 
-    uploadTask.on("state_changed",
-        (snap) => {
-            const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-            progress.value = pct;
-            status.textContent = `Subiendo... ${pct}%`;
-        },
-        (err) => { status.textContent = "Error: " + err.message; },
-        async () => {
-            const url = await storageRef.getDownloadURL();
-            status.textContent = "PDF subido correctamente.";
-            link.href = url;
-            link.style.display = "inline";
+        const meta = { asignatura, tipo, tema, nombre, driveFileId: driveFile.id, urlPreview, urlDownload, size: file.size, createdAt: Date.now() };
+        await saveMetadata(meta);
 
-            await db.collection("pdfs").add({ asignatura, tipo, tema, nombre, url, path });
-            cargarListaPDFs();
-        }
-    );
+        status.textContent = "PDF subido correctamente.";
+        link.href = urlPreview;
+        link.style.display = "inline";
+
+        cargarListaPDFs();
+    } catch (err) {
+        status.textContent = "Error: " + err.message;
+    }
 });
 
-// Listar PDFs
+// --- Listar PDFs desde DB ---
 async function cargarListaPDFs() {
     const pdfList = document.getElementById("pdfList");
     pdfList.innerHTML = "";
-    const snapshot = await db.collection("pdfs").get();
-    snapshot.forEach(doc => {
-        const data = doc.data();
+
+    const snapshot = await get(ref(db, "pdfs"));
+    if (!snapshot.exists()) return;
+
+    const data = snapshot.val();
+    Object.entries(data).forEach(([id, pdf]) => {
         const div = document.createElement("div");
         div.className = "pdf-item";
 
         const a = document.createElement("a");
-        a.href = data.url;
-        a.textContent = `${data.asignatura} - ${data.tipo} - ${data.tema} - ${data.nombre}`;
+        a.href = pdf.urlPreview;
+        a.textContent = `${pdf.asignatura} - ${pdf.tipo} - ${pdf.tema} - ${pdf.nombre}`;
         a.target = "_blank";
 
         const btn = document.createElement("button");
         btn.textContent = "Eliminar";
         btn.addEventListener("click", async () => {
             try {
-                // Borrar de Storage
-                await storage.ref(data.path).delete();
-                // Borrar de Firestore
-                await db.collection("pdfs").doc(doc.id).delete();
+                // Borrar de DB
+                await set(ref(db, "pdfs/" + id), null);
                 div.remove();
             } catch (err) {
                 alert("Error al eliminar: " + err.message);
