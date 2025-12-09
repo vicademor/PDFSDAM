@@ -1,3 +1,7 @@
+// --- Importar Firebase modular ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
 // Ejecutar todo cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
     // Toggle sidebar
@@ -16,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalContent = document.getElementById('modalContent');
     const modalClose = document.getElementById('modalClose');
 
-    // Firebase inicialización (igual que en admin.js)
+    // Inicializar Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
         authDomain: "pdfsdam.firebaseapp.com",
@@ -26,10 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
         measurementId: "G-PXS4C0EZN9"
     };
 
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     // Función para abrir modal
     function abrirModal(asignaturas, card) {
@@ -55,18 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // Mostrar el modal
         modalOverlay.style.display = 'flex';
     }
 
     // 🔥 Escuchar cambios en tiempo real y reconstruir asignaturas
-    db.ref("pdfs").on("value", snapshot => {
+    onValue(ref(db, "pdfs"), snapshot => {
         const asignaturas = {};
         if (!snapshot.exists()) return;
 
-        snapshot.forEach(child => {
-            const data = child.val();
-            const { asignatura, tipo, tema, nombre, urlPreview } = data;
+        const data = snapshot.val();
+        Object.entries(data).forEach(([id, pdf]) => {
+            const { asignatura, tipo, tema, nombre, urlPreview } = pdf;
 
             if (!asignaturas[asignatura]) asignaturas[asignatura] = { resumenes: {}, ejercicios: {} };
             if (!asignaturas[asignatura][tipo][tema]) asignaturas[asignatura][tipo][tema] = [];
@@ -74,25 +75,22 @@ document.addEventListener("DOMContentLoaded", () => {
             asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
         });
 
-        // Crear dinámicamente las cards en el HTML
-        Object.keys(asignaturas).forEach(asig => {
-            ["resumenes", "ejercicios"].forEach(tipo => {
-                const section = document.querySelector(`#${tipo} .section-cards`);
-                if (!section) return;
+        // Limpiar y reconstruir cards
+        ["resumenes", "ejercicios"].forEach(tipo => {
+            const section = document.querySelector(`#${tipo} .section-cards`);
+            if (!section) return;
+            section.innerHTML = "";
 
+            Object.keys(asignaturas).forEach(asig => {
                 Object.keys(asignaturas[asig][tipo]).forEach(tema => {
-                    let card = section.querySelector(`[data-topic="${tema}"]`);
-                    if (!card) {
-                        card = document.createElement("div");
-                        card.className = "topic-card";
-                        card.dataset.asignatura = asig;
-                        card.dataset.section = tipo;
-                        card.dataset.topic = tema;
-                        card.textContent = tema;
-                        section.appendChild(card);
-                    }
+                    const card = document.createElement("div");
+                    card.className = "topic-card";
+                    card.dataset.asignatura = asig;
+                    card.dataset.section = tipo;
+                    card.dataset.topic = tema;
+                    card.textContent = tema;
+                    section.appendChild(card);
 
-                    // Listener para abrir modal
                     card.onclick = () => abrirModal(asignaturas, card);
                 });
             });
