@@ -31,50 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const db = firebase.database();
 
-    // Cargar asignaturas dinámicamente desde Realtime Database
-    async function cargarAsignaturas() {
-        const snapshot = await db.ref("pdfs").once("value");
-        const asignaturas = {};
-
-        if (!snapshot.exists()) return asignaturas;
-
-        snapshot.forEach(child => {
-            const data = child.val();
-            const { asignatura, tipo, tema, nombre, urlPreview } = data;
-
-            if (!asignaturas[asignatura]) asignaturas[asignatura] = { resumenes: {}, ejercicios: {} };
-            if (!asignaturas[asignatura][tipo][tema]) asignaturas[asignatura][tipo][tema] = [];
-
-            asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
-        });
-
-        // 🔥 Crear dinámicamente las cards en el HTML
-        Object.keys(asignaturas).forEach(asig => {
-            ["resumenes", "ejercicios"].forEach(tipo => {
-                const section = document.querySelector(`#${tipo} .section-cards`);
-                if (!section) return;
-
-                Object.keys(asignaturas[asig][tipo]).forEach(tema => {
-                    // Si no existe ya la card en el HTML, la creamos
-                    if (!section.querySelector(`[data-topic="${tema}"]`)) {
-                        const card = document.createElement("div");
-                        card.className = "topic-card";
-                        card.dataset.asignatura = asig;
-                        card.dataset.section = tipo;
-                        card.dataset.topic = tema;
-                        card.textContent = tema; // se muestra el nombre del tema
-                        section.appendChild(card);
-
-                        // Añadir listener al nuevo card
-                        card.addEventListener('click', () => abrirModal(asignaturas, card));
-                    }
-                });
-            });
-        });
-
-        return asignaturas;
-    }
-
     // Función para abrir modal
     function abrirModal(asignaturas, card) {
         const asignatura = card.getAttribute('data-asignatura');
@@ -103,12 +59,43 @@ document.addEventListener("DOMContentLoaded", () => {
         modalOverlay.style.display = 'flex';
     }
 
-    // Inicializar
-    cargarAsignaturas().then(asignaturas => {
-        // Añadir listeners a las cards que ya existan en el HTML
-        const topicCards = document.querySelectorAll('.topic-card');
-        topicCards.forEach(card => {
-            card.addEventListener('click', () => abrirModal(asignaturas, card));
+    // 🔥 Escuchar cambios en tiempo real y reconstruir asignaturas
+    db.ref("pdfs").on("value", snapshot => {
+        const asignaturas = {};
+        if (!snapshot.exists()) return;
+
+        snapshot.forEach(child => {
+            const data = child.val();
+            const { asignatura, tipo, tema, nombre, urlPreview } = data;
+
+            if (!asignaturas[asignatura]) asignaturas[asignatura] = { resumenes: {}, ejercicios: {} };
+            if (!asignaturas[asignatura][tipo][tema]) asignaturas[asignatura][tipo][tema] = [];
+
+            asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
+        });
+
+        // Crear dinámicamente las cards en el HTML
+        Object.keys(asignaturas).forEach(asig => {
+            ["resumenes", "ejercicios"].forEach(tipo => {
+                const section = document.querySelector(`#${tipo} .section-cards`);
+                if (!section) return;
+
+                Object.keys(asignaturas[asig][tipo]).forEach(tema => {
+                    let card = section.querySelector(`[data-topic="${tema}"]`);
+                    if (!card) {
+                        card = document.createElement("div");
+                        card.className = "topic-card";
+                        card.dataset.asignatura = asig;
+                        card.dataset.section = tipo;
+                        card.dataset.topic = tema;
+                        card.textContent = tema;
+                        section.appendChild(card);
+                    }
+
+                    // Listener para abrir modal
+                    card.onclick = () => abrirModal(asignaturas, card);
+                });
+            });
         });
     });
 
