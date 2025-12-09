@@ -43,12 +43,7 @@ if (accessToken) {
     document.getElementById("uploadSection").style.display = "block";
     document.getElementById("manageSection").style.display = "block";
     cargarListaPDFs();
-} else {
-    status.textContent = "❌ No estás logueado con Google Drive.";
-    return;
-
 }
-
 // Botón login con Google
 document.getElementById("loginBtn").addEventListener("click", () => {
     window.location.href = getAuthUrl();
