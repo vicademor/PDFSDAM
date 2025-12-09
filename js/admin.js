@@ -1,5 +1,3 @@
-// admin.js
-
 // --- Configuración Firebase ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
@@ -44,11 +42,12 @@ function getAccessTokenFromHash() {
 let accessToken = getAccessTokenFromHash();
 if (accessToken) {
     // Mostrar secciones al iniciar sesión
-    document.getElementById("loginStatus").textContent = "Login correcto con Google Drive.";
+    document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
     document.getElementById("uploadSection").style.display = "block";
     document.getElementById("manageSection").style.display = "block";
     cargarListaPDFs();
 }
+
 // Botón login con Google
 document.getElementById("loginBtn").addEventListener("click", () => {
     window.location.href = getAuthUrl();
@@ -115,23 +114,39 @@ input.addEventListener("change", async (e) => {
     const nombre = document.getElementById("nombre").value || file.name;
 
     try {
-        status.textContent = "Subiendo a Drive...";
+        status.textContent = "⏳ Subiendo a Drive...";
+        progress.value = 10;
+
         const driveFile = await uploadPdfToDrive(file, nombre);
+        progress.value = 70;
+
         await makeFilePublic(driveFile.id);
+        progress.value = 90;
 
         const urlPreview = `https://drive.google.com/file/d/${driveFile.id}/preview`;
         const urlDownload = `https://drive.google.com/uc?export=download&id=${driveFile.id}`;
 
-        const meta = { asignatura, tipo, tema, nombre, driveFileId: driveFile.id, urlPreview, urlDownload, size: file.size, createdAt: Date.now() };
+        const meta = {
+            asignatura,
+            tipo,
+            tema,
+            nombre,
+            driveFileId: driveFile.id,
+            urlPreview,
+            urlDownload,
+            size: file.size,
+            createdAt: Date.now()
+        };
         await saveMetadata(meta);
 
-        status.textContent = "PDF subido correctamente.";
+        progress.value = 100;
+        status.textContent = "✅ PDF subido correctamente.";
         link.href = urlPreview;
         link.style.display = "inline";
 
         cargarListaPDFs();
     } catch (err) {
-        status.textContent = "Error: " + err.message;
+        status.textContent = "❌ Error: " + err.message;
     }
 });
 
@@ -157,7 +172,6 @@ async function cargarListaPDFs() {
         btn.textContent = "Eliminar";
         btn.addEventListener("click", async () => {
             try {
-                // Borrar de DB
                 await set(ref(db, "pdfs/" + id), null);
                 div.remove();
             } catch (err) {
