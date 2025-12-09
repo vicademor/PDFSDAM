@@ -42,7 +42,13 @@ function getAccessTokenFromHash() {
 }
 
 let accessToken = getAccessTokenFromHash();
-
+if (accessToken) {
+    // Mostrar secciones al iniciar sesión
+    document.getElementById("loginStatus").textContent = "Login correcto con Google Drive.";
+    document.getElementById("uploadSection").style.display = "block";
+    document.getElementById("manageSection").style.display = "block";
+    cargarListaPDFs();
+}
 // Botón login con Google
 document.getElementById("loginBtn").addEventListener("click", () => {
     window.location.href = getAuthUrl();
