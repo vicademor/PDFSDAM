@@ -25,7 +25,7 @@ const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
 // --- Configuración OAuth Google Drive ---
-const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "836229684120-6krp4qg8uovhalhqff77j6o502ahvlh7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
 function getAuthUrl() {
