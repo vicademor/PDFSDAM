@@ -1,13 +1,5 @@
-// --- Configuración Firebase ---
+// --- Configuración Firebase (solo para DB) ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithRedirect,
-    getRedirectResult,
-    onAuthStateChanged,
-    signOut
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -20,9 +12,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getDatabase(app);
-const provider = new GoogleAuthProvider();
 
 // --- Configuración OAuth Google Drive ---
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
@@ -44,28 +34,6 @@ function getAccessTokenFromHash() {
     return h.get("access_token");
 }
 
-// --- Detectar sesión activa ---
-onAuthStateChanged(auth, user => {
-    if (user) {
-        console.log("Usuario activo:", user.email);
-        document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
-        document.getElementById("uploadSection").style.display = "block";
-        document.getElementById("manageSection").style.display = "block";
-    } else {
-        console.log("No hay sesión activa");
-        document.getElementById("loginStatus").textContent = "❌ No autenticado.";
-        document.getElementById("uploadSection").style.display = "none";
-        document.getElementById("manageSection").style.display = "none";
-    }
-});
-
-// --- Recuperar resultado del redirect ---
-getRedirectResult(auth).then(result => {
-    console.log("Resultado del redirect:", result);
-}).catch(err => {
-    console.error("Error al recuperar redirect:", err);
-});
-
 // --- Lógica principal ---
 document.addEventListener("DOMContentLoaded", () => {
     let accessToken = getAccessTokenFromHash();
@@ -77,16 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = document.getElementById("downloadLink");
 
     if (loginBtn) {
-        loginBtn.addEventListener("click", async () => {
-            try {
-                await signInWithRedirect(auth, provider);
-            } catch (err) {
-                console.error("Error en login:", err);
-            }
+        loginBtn.addEventListener("click", () => {
+            window.location.href = getAuthUrl(); // redirige a Google OAuth
         });
     }
 
     if (accessToken) {
+        console.log("✅ Token activo:", accessToken);
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
         document.getElementById("uploadSection").style.display = "block";
         document.getElementById("manageSection").style.display = "block";
