@@ -252,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     await set(ref(db, "pdfs/" + id), null);
                     div.remove();
+                    alert("✅ PDF eliminado correctamente.");
                 } catch (err) {
                     alert("Error al eliminar: " + err.message);
                 }

@@ -59,7 +59,13 @@ header p {
     top: 0;
     left: 0;
     z-index: 1000;
-    transform: translateX(0);
+}
+
+/* 👇 visible siempre en escritorio */
+@media (min-width: 1025px) {
+    .sidebar {
+        transform: translateX(0);
+    }
 }
 
 .sidebar a {
@@ -256,10 +262,12 @@ header p {
         flex-direction: column;
     }
 
+    /* 👇 oculta por defecto en móvil */
     .sidebar {
         transform: translateX(-100%);
     }
 
+    /* 👇 aparece al pulsar el botón (cuando body tiene la clase) */
     body.sidebar-open .sidebar {
         transform: translateX(0);
     }
