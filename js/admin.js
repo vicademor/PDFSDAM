@@ -48,12 +48,21 @@ onAuthStateChanged(auth, user => {
     if (user) {
         console.log("Usuario activo:", user.email);
 
-        const allowedEmails = ["bdpdfsdam@gmail.com"];
-        if (!allowedEmails.includes(user.email)) {
-            alert("Acceso no autorizado");
-            signOut(auth);
-            return;
-        }
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                console.log("Usuario activo:", user.email);
+
+                document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
+                document.getElementById("uploadSection").style.display = "block";
+                document.getElementById("manageSection").style.display = "block";
+
+            } else {
+                console.log("No hay sesión activa");
+                document.getElementById("loginStatus").textContent = "❌ No autenticado.";
+                document.getElementById("uploadSection").style.display = "none";
+                document.getElementById("manageSection").style.display = "none";
+            }
+        });
 
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
         document.getElementById("uploadSection").style.display = "block";
