@@ -264,12 +264,12 @@ header p {
 
     /* 👇 oculta por defecto en móvil */
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-100%) !important;
     }
 
     /* 👇 aparece al pulsar el botón (cuando body tiene la clase) */
     body.sidebar-open .sidebar {
-        transform: translateX(0);
+        transform: translateX(0) !important;
     }
 
     .content {

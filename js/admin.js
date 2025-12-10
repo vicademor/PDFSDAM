@@ -77,9 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
-                // Filtrar por email permitido (cámbialo por el tuyo)
-                const allowedEmail = "tuemail@gmail.com";
-                if (user.email !== allowedEmail) {
+                const allowedEmails = ["bdpdfsdam@gmail.com"];
+                if (!allowedEmails.includes(user.email)) {
                     alert("Acceso no autorizado");
                     await signOut(auth);
                     return;
@@ -89,10 +88,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 uploadSection.style.display = "block";
                 manageSection.style.display = "block";
 
-                // Redirigir a OAuth de Drive después de login (espera breve)
-                setTimeout(() => {
-                    window.location.href = getAuthUrl();
-                }, 1000);
+                // Esperar a que Firebase estabilice el estado antes de redirigir
+                const unsub = onAuthStateChanged(auth, u => {
+                    if (u && u.email === user.email) {
+                        unsub(); // detener el listener
+                        setTimeout(() => {
+                            window.location.href = getAuthUrl();
+                        }, 500);
+                    }
+                });
             } catch (err) {
                 console.error("Error en login:", err);
             }
