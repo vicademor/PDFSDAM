@@ -25,7 +25,7 @@ const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
 // --- Configuración OAuth Google Drive ---
-const GOOGLE_CLIENT_ID = "836229684120-6krp4qg8uovhalhqff77j6o502ahvlh7.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
 function getAuthUrl() {
@@ -60,9 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
     onAuthStateChanged(auth, user => {
         if (user) {
             console.log("Usuario activo:", user.email);
+
+            const allowedEmails = ["bdpdfsdam@gmail.com"];
+            if (!allowedEmails.includes(user.email)) {
+                alert("Acceso no autorizado");
+                signOut(auth);
+                return;
+            }
+
             loginStatus.textContent = "✅ Login correcto con Firebase Auth.";
             uploadSection.style.display = "block";
             manageSection.style.display = "block";
+
         } else {
             console.log("No hay sesión activa");
             loginStatus.textContent = "❌ No autenticado.";
@@ -70,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
             manageSection.style.display = "none";
         }
     });
-
     // --- Login con Firebase Auth (Google) ---
     if (loginBtn) {
         loginBtn.addEventListener("click", async () => {
@@ -84,27 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Recuperar resultado del redirect
     getRedirectResult(auth).then(result => {
-        console.log("Resultado del redirect:", result); // <-- log añadido
-        if (result && result.user) {
-            const user = result.user;
-            console.log("Usuario devuelto:", user.email); // <-- log añadido
-
-            const allowedEmails = ["bdpdfsdam@gmail.com"];
-            if (!allowedEmails.includes(user.email)) {
-                alert("Acceso no autorizado");
-                signOut(auth);
-                return;
-            }
-
-            loginStatus.textContent = "✅ Login correcto con Firebase Auth.";
-            uploadSection.style.display = "block";
-            manageSection.style.display = "block";
-
-            // Redirigir a OAuth de Drive después de login
-            setTimeout(() => {
-                window.location.href = getAuthUrl();
-            }, 500);
-        }
+        console.log("Resultado del redirect:", result);
     }).catch(err => {
         console.error("Error al recuperar redirect:", err);
     });
