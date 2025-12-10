@@ -32,6 +32,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.admin.html.executor": "Run",
     "JavaScript Debug.bases.html.executor": "Run",
     "JavaScript Debug.index.html.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -70,6 +71,7 @@
       <workItem from="1765120634367" duration="8864000" />
       <workItem from="1765135612524" duration="1354000" />
       <workItem from="1765292274119" duration="10867000" />
+      <workItem from="1765365082669" duration="927000" />
     </task>
     <servers />
   </component>

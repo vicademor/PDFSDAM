@@ -17,7 +17,7 @@ header {
     right: 254px; /* espacio para el índice en escritorio */
     text-align: center;
     width: auto;
-    z-index: 500;
+    z-index: 800; /* menor que sidebar y toggle */
 }
 
 header h1 {
@@ -112,7 +112,7 @@ header p {
     position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 1001;
+    z-index: 2000; /* más alto que header y sidebar */
     background-color: orange;
     color: white;
     border: none;
@@ -272,15 +272,16 @@ header p {
         left: 0;
         right: 0;
         width: 100%;
-        height: auto;              /* que se adapte al contenido */
-        z-index: 500;
+        height: auto;
+        z-index: 800; /* menor que toggle */
     }
+
     .content {
-        margin-top: 120px;         /* deja hueco para el header en móvil */
+        margin-top: 120px; /* deja hueco para el header en móvil */
         margin-left: 0;
         margin-right: 0;
         max-width: 100%;
-        padding: 1rem;             /* padding normal, sin que se solape */
+        padding: 1rem;
     }
 
     #index-fixed {
@@ -291,11 +292,12 @@ header p {
         margin-left: 0;
         width: 100%;
     }
+
     header h1 {
-        font-size: 1.8rem; /* más pequeño en móvil */
+        font-size: 1.8rem;
     }
+
     header p {
         font-size: 1rem;
     }
-
 }

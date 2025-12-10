@@ -1,6 +1,6 @@
 // --- Configuración Firebase ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -15,6 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
 
 // --- Configuración OAuth Google Drive ---
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
@@ -48,17 +49,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const status = document.getElementById("uploadStatus");
     const link = document.getElementById("downloadLink");
 
+    // --- Login con Firebase Auth (Google) ---
+    if (loginBtn) {
+        loginBtn.addEventListener("click", async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // Filtrar por email permitido
+                const allowedEmail = "tuemail@gmail.com"; // 👈 cambia por tu cuenta
+                if (user.email !== allowedEmail) {
+                    alert("Acceso no autorizado");
+                    await auth.signOut();
+                    return;
+                }
+
+                loginStatus.textContent = "✅ Login correcto con Firebase Auth.";
+                uploadSection.style.display = "block";
+                manageSection.style.display = "block";
+
+                // Iniciar OAuth de Drive
+                window.location.href = getAuthUrl();
+            } catch (err) {
+                console.error("Error en login:", err);
+            }
+        });
+    }
+
     if (accessToken) {
         loginStatus.textContent = "✅ Login correcto con Google Drive.";
         uploadSection.style.display = "block";
         manageSection.style.display = "block";
         cargarListaPDFs();
-    }
-
-    if (loginBtn) {
-        loginBtn.addEventListener("click", () => {
-            window.location.href = getAuthUrl();
-        });
     }
 
     // --- Subida a Drive ---
@@ -175,9 +197,34 @@ document.addEventListener("DOMContentLoaded", () => {
             a.textContent = `${pdf.asignatura} - ${pdf.tipo} - ${pdf.tema} - ${pdf.nombre}`;
             a.target = "_blank";
 
-            const btn = document.createElement("button");
-            btn.textContent = "Eliminar";
-            btn.addEventListener("click", async () => {
+            // Botón Editar
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "Editar";
+            editBtn.addEventListener("click", async () => {
+                const nuevoTema = prompt("Nuevo tema:", pdf.tema);
+                const nuevoNombre = prompt("Nuevo nombre:", pdf.nombre);
+
+                if (nuevoTema && nuevoNombre) {
+                    try {
+                        const updatedMeta = {
+                            ...pdf,
+                            tema: nuevoTema,
+                            nombre: nuevoNombre,
+                            updatedAt: Date.now()
+                        };
+                        await set(ref(db, "pdfs/" + id), updatedMeta);
+                        alert("✅ PDF actualizado correctamente.");
+                        cargarListaPDFs();
+                    } catch (err) {
+                        alert("Error al actualizar: " + err.message);
+                    }
+                }
+            });
+
+            // Botón Eliminar
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Eliminar";
+            deleteBtn.addEventListener("click", async () => {
                 try {
                     await set(ref(db, "pdfs/" + id), null);
                     div.remove();
@@ -187,7 +234,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             div.appendChild(a);
-            div.appendChild(btn);
+            div.appendChild(editBtn);
+            div.appendChild(deleteBtn);
             pdfList.appendChild(div);
         });
     }

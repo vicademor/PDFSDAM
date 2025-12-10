@@ -10,13 +10,15 @@
         input, select, button { margin-top: 5px; padding: 6px; width: 100%; }
         progress { width: 100%; margin-top: 10px; }
         #uploadSection, #manageSection { display: none; }
-        .pdf-item { display: flex; justify-content: space-between; margin: 5px 0; }
+        .pdf-item { display: flex; justify-content: space-between; align-items: center; margin: 5px 0; gap: 8px; }
         .pdf-item a { flex: 1; }
+        .pdf-item button { flex-shrink: 0; }
     </style>
 </head>
 <body>
 <h2>Panel de Administración PDFSDAM</h2>
 <a href="index.html">Inicio</a>
+
 <!-- Login con Google -->
 <section id="loginSection">
     <h3>Acceso</h3>
@@ -63,12 +65,7 @@
     <div id="pdfList">Cargando lista...</div>
 </section>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js" type="module"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js" type="module"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js" type="module"></script>
-
-<!-- Tu lógica -->
+<!-- Script principal -->
 <script type="module" src="js/admin.js"></script>
 </body>
 </html>
