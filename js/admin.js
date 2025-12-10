@@ -24,7 +24,6 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-
 // --- Configuración OAuth Google Drive ---
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
@@ -44,30 +43,14 @@ function getAccessTokenFromHash() {
     const h = new URLSearchParams(window.location.hash.slice(1));
     return h.get("access_token");
 }
+
+// --- Detectar sesión activa ---
 onAuthStateChanged(auth, user => {
     if (user) {
         console.log("Usuario activo:", user.email);
-
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                console.log("Usuario activo:", user.email);
-
-                document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
-                document.getElementById("uploadSection").style.display = "block";
-                document.getElementById("manageSection").style.display = "block";
-
-            } else {
-                console.log("No hay sesión activa");
-                document.getElementById("loginStatus").textContent = "❌ No autenticado.";
-                document.getElementById("uploadSection").style.display = "none";
-                document.getElementById("manageSection").style.display = "none";
-            }
-        });
-
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
         document.getElementById("uploadSection").style.display = "block";
         document.getElementById("manageSection").style.display = "block";
-
     } else {
         console.log("No hay sesión activa");
         document.getElementById("loginStatus").textContent = "❌ No autenticado.";
@@ -75,11 +58,15 @@ onAuthStateChanged(auth, user => {
         document.getElementById("manageSection").style.display = "none";
     }
 });
+
+// --- Recuperar resultado del redirect ---
 getRedirectResult(auth).then(result => {
     console.log("Resultado del redirect:", result);
 }).catch(err => {
     console.error("Error al recuperar redirect:", err);
 });
+
+// --- Lógica principal ---
 document.addEventListener("DOMContentLoaded", () => {
     let accessToken = getAccessTokenFromHash();
 
@@ -100,20 +87,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (accessToken) {
-        const loginStatus = document.getElementById("loginStatus");
-        const uploadSection = document.getElementById("uploadSection");
-        const manageSection = document.getElementById("manageSection");
-
-        loginStatus.textContent = "✅ Login correcto con Google Drive.";
-        uploadSection.style.display = "block";
-        manageSection.style.display = "block";
+        document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
+        document.getElementById("uploadSection").style.display = "block";
+        document.getElementById("manageSection").style.display = "block";
         cargarListaPDFs();
     }
 
     // --- Subida a Drive ---
     async function uploadPdfToDrive(fileBlob, filename) {
         const metadata = { name: filename, mimeType: "application/pdf" };
-
         const boundary = "-------3141592653589793";
         const delimiter = `\r\n--${boundary}\r\n`;
         const closeDelimiter = `\r\n--${boundary}--`;
@@ -133,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) throw new Error(await res.text());
-        return res.json(); // { id, name, ... }
+        return res.json();
     }
 
     async function makeFilePublic(fileId) {
@@ -147,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- Guardar metadatos en DB ---
     async function saveMetadata(meta) {
         const newRef = push(ref(db, "pdfs"));
         await set(newRef, meta);
