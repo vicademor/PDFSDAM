@@ -59,14 +59,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- Subida a Drive ---
-    async function uploadPdfToDrive(fileBlob, filename) {
-        const metadata = { name: filename, mimeType: "application/pdf" };
+    async function uploadFileToDrive(fileBlob, filename) {
+        const ext = filename.split(".").pop().toLowerCase();
+
+        // Detectar MIME según extensión
+        let mimeType = "application/octet-stream"; // genérico por defecto
+        if (ext === "pdf") mimeType = "application/pdf";
+        if (ext === "java") mimeType = "text/x-java-source";
+        if (ext === "rar") mimeType = "application/vnd.rar";
+
+        const metadata = { name: filename, mimeType };
+
         const boundary = "-------3141592653589793";
         const delimiter = `\r\n--${boundary}\r\n`;
         const closeDelimiter = `\r\n--${boundary}--`;
 
         const metadataPart = `${delimiter}Content-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}`;
-        const filePart = `${delimiter}Content-Type: application/pdf\r\n\r\n`;
+        const filePart = `${delimiter}Content-Type: ${mimeType}\r\n\r\n`;
 
         const reader = await fileBlob.arrayBuffer();
         const body = new Blob([metadataPart, filePart, new Uint8Array(reader), closeDelimiter], {
