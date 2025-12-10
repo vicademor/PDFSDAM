@@ -1,6 +1,12 @@
 // --- Configuración Firebase ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -49,6 +55,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const status = document.getElementById("uploadStatus");
     const link = document.getElementById("downloadLink");
 
+    // --- Listener de estado de Auth ---
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            console.log("Usuario activo:", user.email);
+            loginStatus.textContent = "✅ Login correcto con Firebase Auth.";
+            uploadSection.style.display = "block";
+            manageSection.style.display = "block";
+        } else {
+            console.log("No hay sesión activa");
+            loginStatus.textContent = "❌ No autenticado.";
+            uploadSection.style.display = "none";
+            manageSection.style.display = "none";
+        }
+    });
+
     // --- Login con Firebase Auth (Google) ---
     if (loginBtn) {
         loginBtn.addEventListener("click", async () => {
@@ -56,11 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
-                // Filtrar por email permitido
-                const allowedEmail = "tuemail@gmail.com"; // 👈 cambia por tu cuenta
+                // Filtrar por email permitido (cámbialo por el tuyo)
+                const allowedEmail = "tuemail@gmail.com";
                 if (user.email !== allowedEmail) {
                     alert("Acceso no autorizado");
-                    await auth.signOut();
+                    await signOut(auth);
                     return;
                 }
 
@@ -68,14 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 uploadSection.style.display = "block";
                 manageSection.style.display = "block";
 
-                // Iniciar OAuth de Drive
-                window.location.href = getAuthUrl();
+                // Redirigir a OAuth de Drive después de login (espera breve)
+                setTimeout(() => {
+                    window.location.href = getAuthUrl();
+                }, 1000);
             } catch (err) {
                 console.error("Error en login:", err);
             }
         });
     }
 
+    // Si venimos del OAuth de Drive con token en hash
     if (accessToken) {
         loginStatus.textContent = "✅ Login correcto con Google Drive.";
         uploadSection.style.display = "block";

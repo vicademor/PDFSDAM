@@ -16,24 +16,34 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Ejecutar todo cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
-    // Toggle sidebar
+    // --- Sidebar toggle con estado global ---
     const toggleBtn = document.getElementById('toggleSidebar');
-    const sidebar = document.getElementById('sidebar');
-    if (toggleBtn && sidebar) {
+    const mq = window.matchMedia('(max-width: 1024px)');
+
+    function applyInitialState() {
+        const open = !mq.matches; // abierto en desktop, cerrado en móvil
+        document.body.classList.toggle('sidebar-open', open);
+        toggleBtn?.setAttribute('aria-expanded', String(open));
+    }
+
+    applyInitialState();
+    mq.addEventListener('change', applyInitialState);
+
+    if (toggleBtn) {
         toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('show');
+            const isOpen = document.body.classList.contains('sidebar-open');
+            document.body.classList.toggle('sidebar-open', !isOpen);
+            toggleBtn.setAttribute('aria-expanded', String(!isOpen));
         });
     }
 
-    // Modal
+    // --- Modal ---
     const modalOverlay = document.getElementById('modalOverlay');
     const modalTitle = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
     const modalClose = document.getElementById('modalClose');
 
-    // Función para abrir modal
     function abrirModal(asignaturas, card) {
         const asignatura = card.dataset.asignatura;
         const section = card.dataset.section;
@@ -96,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Cerrar modal
+    // --- Cerrar modal ---
     if (modalClose) {
         modalClose.addEventListener('click', () => (modalOverlay.style.display = 'none'));
     }

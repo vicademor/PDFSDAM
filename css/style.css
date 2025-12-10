@@ -1,3 +1,8 @@
+:root {
+    --sidebar-width: 220px;
+    --index-width: 220px;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -13,11 +18,11 @@ header {
     padding: 20px 20px;
     position: fixed;
     top: 0;
-    left: 220px;  /* espacio para la sidebar en escritorio */
-    right: 254px; /* espacio para el índice en escritorio */
+    left: var(--sidebar-width);
+    right: var(--index-width);
     text-align: center;
     width: auto;
-    z-index: 800; /* menor que sidebar y toggle */
+    z-index: 800;
 }
 
 header h1 {
@@ -41,7 +46,7 @@ header p {
 
 /* Sidebar */
 .sidebar {
-    width: 220px;
+    width: var(--sidebar-width);
     background-color: orange;
     color: white;
     padding: 2rem 1rem;
@@ -54,7 +59,7 @@ header p {
     top: 0;
     left: 0;
     z-index: 1000;
-    transform: translateX(0); /* visible en escritorio */
+    transform: translateX(0);
 }
 
 .sidebar a {
@@ -75,8 +80,8 @@ header p {
     flex: 1;
     padding: 140px 2rem 2rem 2rem;
     max-width: 900px;
-    margin-left: 240px; /* espacio para sidebar */
-    margin-right: 240px; /* espacio para índice */
+    margin-left: calc(var(--sidebar-width) + 20px);
+    margin-right: calc(var(--index-width) + 20px);
     transition: margin-left 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -87,7 +92,7 @@ header p {
     position: fixed;
     top: 0;
     right: 0;
-    width: 220px;
+    width: var(--index-width);
     height: 100vh;
     padding: 2rem 1rem;
     background-color: #fff;
@@ -112,7 +117,7 @@ header p {
     position: fixed;
     top: 10px;
     left: 10px;
-    z-index: 2000; /* más alto que header y sidebar */
+    z-index: 2000;
     background-color: orange;
     color: white;
     border: none;
@@ -190,7 +195,7 @@ header p {
     color: white;
     text-align: center;
     margin-left: -53px;
-    width: calc(100vw - 219px);
+    width: calc(100vw - var(--sidebar-width));
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -252,11 +257,11 @@ header p {
     }
 
     .sidebar {
-        transform: translateX(-100%); /* oculta en móvil */
+        transform: translateX(-100%);
     }
 
-    .sidebar.show {
-        transform: translateX(0); /* clase que la muestra */
+    body.sidebar-open .sidebar {
+        transform: translateX(0);
     }
 
     .content {
@@ -273,11 +278,11 @@ header p {
         right: 0;
         width: 100%;
         height: auto;
-        z-index: 800; /* menor que toggle */
+        z-index: 800;
     }
 
     .content {
-        margin-top: 120px; /* deja hueco para el header en móvil */
+        margin-top: 120px;
         margin-left: 0;
         margin-right: 0;
         max-width: 100%;
