@@ -81,9 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Recuperar resultado del redirect
     getRedirectResult(auth).then(result => {
+        console.log("Resultado del redirect:", result); // <-- log añadido
         if (result && result.user) {
             const user = result.user;
+            console.log("Usuario devuelto:", user.email); // <-- log añadido
+
             const allowedEmails = ["bdpdfsdam@gmail.com"];
             if (!allowedEmails.includes(user.email)) {
                 alert("Acceso no autorizado");
