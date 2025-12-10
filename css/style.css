@@ -19,7 +19,7 @@ header {
     position: fixed;
     top: 0;
     left: var(--sidebar-width);
-    right: var(--index-width);
+    right: calc(var(--index-width) + 2px); /* compensar el border */
     text-align: center;
     width: auto;
     z-index: 800;
@@ -95,6 +95,7 @@ header p {
 
 /* Índice fijo a la derecha */
 #index-fixed {
+    box-sizing: border-box; /* incluye el border en los 220px */
     position: fixed;
     top: 0;
     right: 0;
