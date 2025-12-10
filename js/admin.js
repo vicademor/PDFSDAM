@@ -24,6 +24,7 @@ const auth = getAuth(app);
 const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
+
 // --- Configuración OAuth Google Drive ---
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
@@ -43,43 +44,42 @@ function getAccessTokenFromHash() {
     const h = new URLSearchParams(window.location.hash.slice(1));
     return h.get("access_token");
 }
+onAuthStateChanged(auth, user => {
+    if (user) {
+        console.log("Usuario activo:", user.email);
 
+        const allowedEmails = ["bdpdfsdam@gmail.com"];
+        if (!allowedEmails.includes(user.email)) {
+            alert("Acceso no autorizado");
+            signOut(auth);
+            return;
+        }
+
+        document.getElementById("loginStatus").textContent = "✅ Login correcto con Firebase Auth.";
+        document.getElementById("uploadSection").style.display = "block";
+        document.getElementById("manageSection").style.display = "block";
+
+    } else {
+        console.log("No hay sesión activa");
+        document.getElementById("loginStatus").textContent = "❌ No autenticado.";
+        document.getElementById("uploadSection").style.display = "none";
+        document.getElementById("manageSection").style.display = "none";
+    }
+});
+getRedirectResult(auth).then(result => {
+    console.log("Resultado del redirect:", result);
+}).catch(err => {
+    console.error("Error al recuperar redirect:", err);
+});
 document.addEventListener("DOMContentLoaded", () => {
     let accessToken = getAccessTokenFromHash();
 
-    const loginStatus = document.getElementById("loginStatus");
-    const uploadSection = document.getElementById("uploadSection");
-    const manageSection = document.getElementById("manageSection");
     const loginBtn = document.getElementById("loginBtn");
     const input = document.getElementById("pdfInput");
     const progress = document.getElementById("uploadProgress");
     const status = document.getElementById("uploadStatus");
     const link = document.getElementById("downloadLink");
 
-    // --- Listener de estado de Auth ---
-    onAuthStateChanged(auth, user => {
-        if (user) {
-            console.log("Usuario activo:", user.email);
-
-            const allowedEmails = ["bdpdfsdam@gmail.com"];
-            if (!allowedEmails.includes(user.email)) {
-                alert("Acceso no autorizado");
-                signOut(auth);
-                return;
-            }
-
-            loginStatus.textContent = "✅ Login correcto con Firebase Auth.";
-            uploadSection.style.display = "block";
-            manageSection.style.display = "block";
-
-        } else {
-            console.log("No hay sesión activa");
-            loginStatus.textContent = "❌ No autenticado.";
-            uploadSection.style.display = "none";
-            manageSection.style.display = "none";
-        }
-    });
-    // --- Login con Firebase Auth (Google) ---
     if (loginBtn) {
         loginBtn.addEventListener("click", async () => {
             try {
@@ -90,15 +90,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Recuperar resultado del redirect
-    getRedirectResult(auth).then(result => {
-        console.log("Resultado del redirect:", result);
-    }).catch(err => {
-        console.error("Error al recuperar redirect:", err);
-    });
-
-    // Si venimos del OAuth de Drive con token en hash
     if (accessToken) {
+        const loginStatus = document.getElementById("loginStatus");
+        const uploadSection = document.getElementById("uploadSection");
+        const manageSection = document.getElementById("manageSection");
+
         loginStatus.textContent = "✅ Login correcto con Google Drive.";
         uploadSection.style.display = "block";
         manageSection.style.display = "block";
