@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 status.textContent = "⏳ Subiendo a Drive...";
                 progress.value = 10;
 
-                const driveFile = await uploadPdfToDrive(file, nombre);
+                const driveFile = await uploadFileToDrive(file, nombre);
                 progress.value = 70;
 
                 await makeFilePublic(driveFile.id);
@@ -202,9 +202,17 @@ document.addEventListener("DOMContentLoaded", () => {
             div.className = "pdf-item";
 
             const a = document.createElement("a");
-            a.href = pdf.urlPreview;
+            const ext = pdf.nombre.split(".").pop().toLowerCase();
+            const enlaceFinal = ["java","rar"].includes(ext) ? pdf.urlDownload : pdf.urlPreview;
+
+            a.href = enlaceFinal;
             a.textContent = `${pdf.asignatura} - ${pdf.tipo} - ${pdf.tema} - ${pdf.nombre}`;
-            a.target = "_blank";
+            a.target = "_blank"; // por defecto abre en pestaña
+
+            if (["java","rar"].includes(ext)) {
+                a.setAttribute("download", pdf.nombre);
+                a.removeAttribute("target"); // quita el target para forzar descarga
+            }
 
             // Botón Editar
             const editBtn = document.createElement("button");
