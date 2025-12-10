@@ -104,13 +104,30 @@ document.addEventListener("DOMContentLoaded", () => {
     if (input) {
         input.addEventListener("change", async (e) => {
             const file = e.target.files[0];
-            if (!file || file.type !== "application/pdf") {
-                status.textContent = "Selecciona un archivo PDF válido.";
+            const tipo = document.getElementById("tipo").value;
+
+            if (!file) {
+                status.textContent = "Selecciona un archivo válido.";
                 return;
             }
 
+            // Validaciones según tipo
+            if (tipo === "resumenes") {
+                if (file.type !== "application/pdf") {
+                    status.textContent = "Solo se permiten PDFs para resúmenes.";
+                    return;
+                }
+            }
+
+            if (tipo === "ejercicios") {
+                const ext = file.name.split(".").pop().toLowerCase();
+                if (!["pdf", "java", "rar"].includes(ext)) {
+                    status.textContent = "Solo se permiten PDF, Java o RAR para ejercicios.";
+                    return;
+                }
+            }
+
             const asignatura = document.getElementById("asignatura").value;
-            const tipo = document.getElementById("tipo").value;
             const tema = document.getElementById("tema").value;
             const nombre = document.getElementById("nombre").value || file.name;
 
@@ -141,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 await saveMetadata(meta);
 
                 progress.value = 100;
-                status.textContent = "✅ PDF subido correctamente.";
+                status.textContent = "✅ Archivo subido correctamente.";
                 link.href = urlPreview;
                 link.style.display = "inline";
 
