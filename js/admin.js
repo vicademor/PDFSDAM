@@ -144,6 +144,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const urlPreview = `https://drive.google.com/file/d/${driveFile.id}/preview`;
                 const urlDownload = `https://drive.google.com/uc?export=download&id=${driveFile.id}`;
 
+                const ext = nombre.split(".").pop().toLowerCase();
+                // 👇 Si es java o rar, usar siempre el enlace de descarga
+                const enlaceFinal = ["java","rar"].includes(ext) ? urlDownload : urlPreview;
+
                 const meta = {
                     asignatura,
                     tipo,
@@ -159,8 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 progress.value = 100;
                 status.textContent = "✅ Archivo subido correctamente.";
-                link.href = urlPreview;
+                link.href = enlaceFinal;
                 link.style.display = "inline";
+
+                // 👇 además puedes forzar descarga con atributo download
+                if (["java","rar"].includes(ext)) {
+                    link.setAttribute("download", nombre);
+                    link.removeAttribute("target"); // no abrir en pestaña
+                }
 
                 cargarListaPDFs();
             } catch (err) {
