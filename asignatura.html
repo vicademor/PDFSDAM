@@ -6,12 +6,20 @@
     <title>PDFSDAM - Asignatura</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body data-asignatura="">
 <button id="toggleSidebar" aria-label="Abrir menú de navegación">
     <span>☰</span>
     <span>Categorías</span>
 </button>
+
+<button id="themeToggle" class="theme-toggle-btn" aria-label="Cambiar tema">🌙 Modo Oscuro</button>
 
 <div class="container">
     <nav class="sidebar" id="sidebar">
@@ -55,6 +63,7 @@
             </li>
 
             <li class="sidebar-sep"><a href="admin.html" class="sidebar-admin">⚙️ Panel Admin</a></li>
+            <li><button id="sidebarThemeToggle" class="sidebar-theme-btn">🌙 Modo Oscuro</button></li>
         </ul>
     </nav>
 
@@ -77,14 +86,12 @@
         <!-- Resúmenes -->
         <section id="resumenes">
             <h2>Resúmenes</h2>
-            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 
         <!-- Ejercicios -->
         <section id="ejercicios">
             <h2>Ejercicios</h2>
-            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 
@@ -121,18 +128,15 @@
         measurementId: "G-PXS4C0EZN9"
     };
 
-    // Leer ID de la URL (?id=nombreasignatura)
     const params = new URLSearchParams(window.location.search);
     const asignaturaId = params.get("id") || "";
 
-    // Establecer data-asignatura en el body ANTES de que app.js lo lea
     document.body.dataset.asignatura = asignaturaId;
 
     if (!asignaturaId) {
         document.getElementById("pageTitle").textContent = "Asignatura no encontrada";
         document.getElementById("pageSubtitle").textContent = "No se especificó ningún ID de asignatura.";
     } else {
-        // Cargar nombre desde Firebase
         const app = initializeApp(firebaseConfig, "asignatura-page");
         const db  = getDatabase(app);
 

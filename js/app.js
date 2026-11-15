@@ -27,6 +27,34 @@ const DAM1_ESTATICAS = {
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
+    // SISTEMA DE MODO CLARO / MODO OSCURO
+    // ==========================================
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const sidebarThemeBtn = document.getElementById('sidebarThemeToggle');
+
+    function updateThemeButtons(theme) {
+        const isDark = theme === 'dark';
+        const label = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+        if (themeToggleBtn)  themeToggleBtn.textContent  = label;
+        if (sidebarThemeBtn) sidebarThemeBtn.textContent = label;
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateThemeButtons(next);
+    }
+
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeButtons(currentTheme);
+
+    if (themeToggleBtn)  themeToggleBtn.addEventListener('click', toggleTheme);
+    if (sidebarThemeBtn) sidebarThemeBtn.addEventListener('click', toggleTheme);
+
+    // ==========================================
     // SIDEBAR TOGGLE (Aparece / Desaparece)
     // ==========================================
     const toggleBtn = document.getElementById('toggleSidebar');
@@ -75,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         btnEl.addEventListener('click', (e) => {
             e.stopPropagation();
             const isOpen = listEl.classList.contains('open');
-            // Cerrar el otro desplegable para mantenerlo ordenado
             document.querySelectorAll('.dropdown-list.open').forEach(el => {
                 if (el !== listEl) el.classList.remove('open');
             });
@@ -83,7 +110,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (el !== btnEl) el.classList.remove('open');
             });
 
-            // Toggle del actual
             listEl.classList.toggle('open', !isOpen);
             btnEl.classList.toggle('open', !isOpen);
         });
@@ -103,7 +129,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupToggle(dam1Btn, dam1List);
     setupToggle(dam2Btn, dam2List);
 
-    // Marcar enlace activo y abrir 1º DAM si estamos en una de sus asignaturas
     if (dam1List) {
         dam1List.querySelectorAll('a[data-asignatura-id]').forEach(a => {
             if (a.dataset.asignaturaId === asignaturaActual) {
@@ -122,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!snapshot.exists()) return;
         const asignaturas = snapshot.val();
 
-        // Limpiar elementos dinámicos previos
         [dam1List, dam2List].forEach(list => {
             if (!list) return;
             list.querySelectorAll('.dynamic-asignatura').forEach(el => el.remove());
@@ -133,10 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetList = curso === "2" ? dam2List : dam1List;
             if (!targetList) return;
 
-            // Evitar duplicar estáticas de 1º DAM
             if (DAM1_ESTATICAS[id]) return;
 
-            // Quitar mensaje de lista vacía
             const emptyMsg = targetList.querySelector('.empty-msg');
             if (emptyMsg) emptyMsg.remove();
 
@@ -192,7 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
         modalOverlay.style.display = 'flex';
     }
 
-    // Escuchar PDFs en tiempo real
     onValue(ref(db, "pdfs"), snapshot => {
         const asignaturas = {};
         if (!snapshot.exists()) return;
@@ -227,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Cerrar modal
     if (modalClose) {
         modalClose.addEventListener('click', () => (modalOverlay.style.display = 'none'));
     }

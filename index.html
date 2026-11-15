@@ -8,12 +8,20 @@
     <link rel="icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff8c00">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body data-asignatura="index">
 <button id="toggleSidebar" aria-label="Abrir menú de navegación">
     <span>☰</span>
     <span>Categorías</span>
 </button>
+
+<button id="themeToggle" class="theme-toggle-btn" aria-label="Cambiar tema">🌙 Modo Oscuro</button>
 
 <div class="container">
     <nav class="sidebar" id="sidebar">
@@ -57,11 +65,12 @@
             </li>
 
             <li class="sidebar-sep"><a href="admin.html" class="sidebar-admin">⚙️ Panel Admin</a></li>
+            <li><button id="sidebarThemeToggle" class="sidebar-theme-btn">🌙 Modo Oscuro</button></li>
         </ul>
     </nav>
 
-    <main class="content" style="margin-right: 24px; max-width: 980px;">
-        <header style="right: 0px">
+    <main class="content" style="max-width: 980px;">
+        <header>
             <h1>PDFSDAM</h1>
             <p>Todos los recursos y apuntes de clase en un solo lugar</p>
         </header>
@@ -70,7 +79,7 @@
             <div class="welcome-inner">
                 <h2>Bienvenido a PDFSDAM</h2>
                 <p>Selecciona una categoría en la barra lateral para acceder a resúmenes, ejercicios y enlaces de clase.</p>
-                <p style="font-size: 0.85rem; opacity: 0.85;">Página de recursos compartidos para estudiantes de Desarrollo de Aplicaciones Multiplataforma.</p>
+                <p style="font-size: 0.88rem; opacity: 0.9;">Página de recursos compartidos para estudiantes de Desarrollo de Aplicaciones Multiplataforma.</p>
                 <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <a href="https://github.com/vicademor" target="_blank" class="btn-primary">Mi perfil de GitHub ↗</a>
                 </div>

@@ -1,36 +1,114 @@
 /* =============================================
-   PDFSDAM — Unified Warm Orange Theme
+   PDFSDAM — Unified Design System
+   Modo Claro (Naranja) / Modo Oscuro (Azul Oscuro/Blanco)
    ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-/* --- Variables de Diseño --- */
+/* =============================================
+   PALETAS Y VARIABLES (MODO CLARO POR DEFECTO)
+   ============================================= */
 :root {
     --sidebar-width: 250px;
     --index-width: 220px;
 
-    /* Paleta unificada: Naranjas y cálidos */
-    --orange-light:   #ffa033;
-    --orange-primary: #ff8c00;
-    --orange-dark:    #e65100;
-    --orange-deep:    #bf360c;
-    --orange-hover:   #ff7700;
+    /* Tonalidades Modo Claro: Naranja */
+    --primary-main:      #ff8c00;
+    --primary-dark:      #e65100;
+    --primary-deep:      #bf360c;
+    --primary-light:     #ffa033;
+    --primary-gradient:  linear-gradient(135deg, #ff8c00 0%, #e65100 100%);
+    --sidebar-gradient:  linear-gradient(180deg, #ff8c00 0%, #f37000 45%, #d84315 100%);
 
-    --bg-page:        #f8f9fa;
-    --bg-card:        #ffffff;
-    --text-main:      #212529;
-    --text-muted:     #6c757d;
-    --border-color:   rgba(0, 0, 0, 0.08);
+    --bg-page:           #f8f9fa;
+    --bg-card:           #ffffff;
+    --bg-card-hover:     #fffdfb;
+    --text-main:         #212529;
+    --text-muted:        #6c757d;
+    --border-color:      rgba(0, 0, 0, 0.08);
 
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --radius-lg: 20px;
+    --toggle-btn-bg:     linear-gradient(135deg, #ffffff, #fff3eb);
+    --toggle-btn-color:  #e65100;
+    --toggle-btn-border: #ff8c00;
 
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 16px rgba(230, 81, 0, 0.15);
-    --shadow-lg: 0 10px 30px rgba(230, 81, 0, 0.22);
+    --sidebar-active-bg:    #ffffff;
+    --sidebar-active-color: #e65100;
+    --sidebar-item-hover:   rgba(255, 255, 255, 0.2);
+    --sidebar-dropdown-bg:  rgba(0, 0, 0, 0.12);
 
-    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --welcome-gradient:  linear-gradient(135deg, #ff8c00 0%, #e65100 100%);
+    --welcome-btn-bg:    #ffffff;
+    --welcome-btn-color: #e65100;
+
+    --card-gradient:     linear-gradient(135deg, #ff8c00 0%, #e65100 100%);
+    --card-text:         #ffffff;
+
+    --modal-border-top:  #ff8c00;
+
+    --table-th-bg:       #fff8f3;
+    --table-th-color:    #e65100;
+    --table-hover-bg:    #fffdfb;
+
+    --badge-res-bg:      #ffe8d6;
+    --badge-res-color:   #a04000;
+    --badge-asig-bg:     #fef3c7;
+    --badge-asig-color:  #92400e;
+
+    --shadow-sm:         0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md:         0 4px 16px rgba(230, 81, 0, 0.15);
+    --shadow-lg:         0 10px 30px rgba(230, 81, 0, 0.22);
+
+    --transition:        0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =============================================
+   TONALIDADES MODO OSCURO (AZUL OSCURO / BLANCO)
+   ============================================= */
+[data-theme="dark"] {
+    --primary-main:      #3b82f6;          /* Azul vibrante moderno */
+    --primary-dark:      #1d4ed8;          /* Azul medio */
+    --primary-deep:      #1e3a8a;          /* Azul oscuro profundo */
+    --primary-light:     #60a5fa;          /* Azul suave */
+    --primary-gradient:  linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+    --sidebar-gradient:  linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+
+    --bg-page:           #0a0e17;          /* Fondo oscuro azulado profundo */
+    --bg-card:           #141c2e;          /* Tarjetas azul oscuro */
+    --bg-card-hover:     #19243c;
+    --text-main:         #f8fafc;          /* Blanco nítido */
+    --text-muted:        #94a3b8;          /* Gris azulado suave */
+    --border-color:      rgba(255, 255, 255, 0.1);
+
+    --toggle-btn-bg:     linear-gradient(135deg, #1e293b, #0f172a);
+    --toggle-btn-color:  #60a5fa;
+    --toggle-btn-border: #3b82f6;
+
+    --sidebar-active-bg:    #3b82f6;
+    --sidebar-active-color: #ffffff;
+    --sidebar-item-hover:   rgba(59, 130, 246, 0.25);
+    --sidebar-dropdown-bg:  rgba(0, 0, 0, 0.28);
+
+    --welcome-gradient:  linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+    --welcome-btn-bg:    #ffffff;
+    --welcome-btn-color: #1e3a8a;
+
+    --card-gradient:     linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    --card-text:         #ffffff;
+
+    --modal-border-top:  #3b82f6;
+
+    --table-th-bg:       #1e293b;
+    --table-th-color:    #93c5fd;
+    --table-hover-bg:    #19243c;
+
+    --badge-res-bg:      #1e293b;
+    --badge-res-color:   #93c5fd;
+    --badge-asig-bg:     #1e3a8a;
+    --badge-asig-color:  #bfdbfe;
+
+    --shadow-sm:         0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md:         0 4px 16px rgba(0, 0, 0, 0.55);
+    --shadow-lg:         0 10px 30px rgba(0, 0, 0, 0.7);
 }
 
 /* --- Reset & Base --- */
@@ -46,6 +124,7 @@ body {
     color: var(--text-main);
     line-height: 1.6;
     overflow-x: hidden;
+    transition: background-color var(--transition), color var(--transition);
 }
 
 /* =============================================
@@ -56,16 +135,16 @@ body {
     top: 14px;
     left: 16px;
     z-index: 2200;
-    background: linear-gradient(135deg, #ffffff, #fff3eb);
-    color: var(--orange-dark);
-    border: 2px solid var(--orange-primary);
+    background: var(--toggle-btn-bg);
+    color: var(--toggle-btn-color);
+    border: 2px solid var(--toggle-btn-border);
     padding: 0.45rem 1rem;
     font-size: 0.88rem;
     font-weight: 700;
     font-family: 'Inter', sans-serif;
     border-radius: 999px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(230, 81, 0, 0.2);
+    box-shadow: var(--shadow-sm);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -74,21 +153,78 @@ body {
 }
 
 #toggleSidebar:hover {
-    background: #ffffff;
     transform: scale(1.04);
-    box-shadow: 0 6px 20px rgba(230, 81, 0, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
-/* Cuando la sidebar está abierta, el botón se desplaza sin sobreponerse al logo */
 body.sidebar-open #toggleSidebar {
     left: calc(var(--sidebar-width) + 16px);
+}
+
+/* =============================================
+   BOTÓN MODO OSCURO / MODO CLARO
+   ============================================= */
+.theme-toggle-btn {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 2200;
+    background: var(--toggle-btn-bg);
+    color: var(--toggle-btn-color);
+    border: 2px solid var(--toggle-btn-border);
+    padding: 0.45rem 0.95rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    user-select: none;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.04);
+    box-shadow: var(--shadow-md);
+}
+
+/* Si hay índice derecho fijo en escritorio, desplazar el botón para no taparlo */
+body:has(#index-fixed) .theme-toggle-btn {
+    right: calc(var(--index-width) + 16px);
+}
+
+/* Botón de tema en sidebar */
+.sidebar-theme-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    margin-top: 6px;
+}
+
+.sidebar-theme-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
 }
 
 /* =============================================
    HEADER PRINCIPAL
    ============================================= */
 header {
-    background: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-dark) 100%);
+    background: var(--primary-gradient);
     padding: 16px 24px;
     position: fixed;
     top: 0;
@@ -97,7 +233,7 @@ header {
     text-align: center;
     z-index: 800;
     box-shadow: var(--shadow-md);
-    transition: left var(--transition), right var(--transition);
+    transition: left var(--transition), right var(--transition), background var(--transition);
 }
 
 body:has(#index-fixed) header {
@@ -114,7 +250,7 @@ header h1 {
     color: #ffffff;
     margin: 0;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 header p {
@@ -134,11 +270,11 @@ header p {
 }
 
 /* =============================================
-   SIDEBAR (NARANJA UNIFICADO)
+   SIDEBAR
    ============================================= */
 .sidebar {
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, #ff8c00 0%, #f37000 45%, #d84315 100%);
+    background: var(--sidebar-gradient);
     color: #ffffff;
     padding: 0 0 2rem 0;
     height: 100vh;
@@ -150,9 +286,9 @@ header p {
     z-index: 1500;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
     transform: translateX(-100%);
-    transition: transform var(--transition);
+    transition: transform var(--transition), background var(--transition);
 }
 
 body.sidebar-open .sidebar {
@@ -171,7 +307,7 @@ body.sidebar-open .sidebar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-logo-text {
@@ -179,12 +315,12 @@ body.sidebar-open .sidebar {
     font-weight: 800;
     letter-spacing: 0.5px;
     color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar-logo-badge {
     background: #ffffff;
-    color: var(--orange-dark);
+    color: var(--primary-dark);
     font-size: 0.7rem;
     font-weight: 800;
     padding: 2px 8px;
@@ -214,18 +350,19 @@ body.sidebar-open .sidebar {
     border-radius: var(--radius-sm);
     font-size: 0.92rem;
     font-weight: 600;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, transform 0.2s, color 0.2s;
 }
 
 .sidebar-nav > li > a:hover {
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--sidebar-item-hover);
     transform: translateX(3px);
 }
 
 .sidebar-nav > li > a.active {
-    background: #ffffff;
-    color: var(--orange-dark);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    font-weight: 700;
 }
 
 /* --- Desplegables de DAM --- */
@@ -252,11 +389,11 @@ body.sidebar-open .sidebar {
 }
 
 .dropdown-toggle:hover {
-    background: rgba(255, 255, 255, 0.24);
+    background: var(--sidebar-item-hover);
 }
 
 .dropdown-toggle.open {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.2);
     border-color: rgba(255, 255, 255, 0.35);
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
@@ -294,7 +431,7 @@ body.sidebar-open .sidebar {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(0, 0, 0, 0.12);
+    background: var(--sidebar-dropdown-bg);
     border-radius: 0 0 var(--radius-sm) var(--radius-sm);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: none;
@@ -317,15 +454,15 @@ body.sidebar-open .sidebar {
 }
 
 .dropdown-list li a:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--sidebar-item-hover);
     padding-left: 1.8rem;
 }
 
 .dropdown-list li a.active {
-    background: #ffffff;
-    color: var(--orange-dark);
+    background: var(--sidebar-active-bg);
+    color: var(--sidebar-active-color);
     font-weight: 700;
-    border-left-color: var(--orange-deep);
+    border-left-color: var(--primary-deep);
     border-radius: 0 6px 6px 0;
 }
 
@@ -372,12 +509,13 @@ body.sidebar-open .content {
     padding: 1.8rem 2rem;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
+    transition: background var(--transition), border-color var(--transition);
 }
 
 .content section h2 {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--orange-dark);
+    color: var(--primary-main);
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
@@ -389,7 +527,7 @@ body.sidebar-open .content {
     display: inline-block;
     width: 4px;
     height: 18px;
-    background: var(--orange-primary);
+    background: var(--primary-main);
     border-radius: 2px;
 }
 
@@ -397,7 +535,7 @@ body.sidebar-open .content {
    SECCIÓN BIENVENIDA (TEXTO 100% LEGIBLE)
    ============================================= */
 .content section.welcome {
-    background: linear-gradient(135deg, #ff8c00 0%, #e65100 100%) !important;
+    background: var(--welcome-gradient) !important;
     border: none !important;
     color: #ffffff !important;
     text-align: center;
@@ -433,23 +571,21 @@ body.sidebar-open .content {
 
 .welcome-inner .btn-primary {
     display: inline-block;
-    background: #ffffff !important;
-    color: var(--orange-dark) !important;
+    background: var(--welcome-btn-bg) !important;
+    color: var(--welcome-btn-color) !important;
     padding: 0.7rem 1.8rem;
     border-radius: 999px;
     font-weight: 700;
     font-size: 0.92rem;
     text-decoration: none;
     margin-top: 1.2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .welcome-inner .btn-primary:hover {
-    background: #fff3eb !important;
-    color: var(--orange-deep) !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
 }
 
 /* =============================================
@@ -462,8 +598,8 @@ body.sidebar-open .content {
 }
 
 .card, .topic-card {
-    background: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-dark) 100%);
-    color: #ffffff !important;
+    background: var(--card-gradient);
+    color: var(--card-text) !important;
     padding: 1.1rem 1.3rem;
     border-radius: var(--radius-md);
     text-decoration: none;
@@ -497,7 +633,7 @@ body.sidebar-open .content {
 
 .project-cards .card a {
     color: #ffffff;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.2);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 700;
@@ -509,7 +645,7 @@ body.sidebar-open .content {
 }
 
 .project-cards .card a:hover {
-    background: rgba(0, 0, 0, 0.28);
+    background: rgba(0, 0, 0, 0.35);
 }
 
 /* =============================================
@@ -523,16 +659,17 @@ body.sidebar-open .content {
     height: 100vh;
     padding: 2.2rem 1.2rem;
     background: var(--bg-card);
-    border-left: 2px solid rgba(255, 140, 0, 0.2);
+    border-left: 2px solid var(--border-color);
     box-shadow: -2px 0 10px rgba(0,0,0,0.04);
     overflow-y: auto;
     box-sizing: border-box;
+    transition: background var(--transition), border-color var(--transition);
 }
 
 #index-fixed h2 {
     font-size: 0.82rem;
     font-weight: 800;
-    color: var(--orange-dark);
+    color: var(--primary-main);
     text-transform: uppercase;
     letter-spacing: 0.8px;
     margin-bottom: 1rem;
@@ -554,8 +691,8 @@ body.sidebar-open .content {
 }
 
 #index-fixed a:hover {
-    color: var(--orange-primary);
-    border-left-color: var(--orange-primary);
+    color: var(--primary-main);
+    border-left-color: var(--primary-main);
 }
 
 /* =============================================
@@ -564,8 +701,8 @@ body.sidebar-open .content {
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(3px);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     display: none;
     justify-content: center;
     align-items: center;
@@ -574,14 +711,15 @@ body.sidebar-open .content {
 
 .modal {
     background: var(--bg-card);
+    color: var(--text-main);
     padding: 2rem;
     border-radius: var(--radius-lg);
     max-width: 620px;
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 12px 36px rgba(0,0,0,0.25);
-    border-top: 5px solid var(--orange-primary);
+    box-shadow: var(--shadow-lg);
+    border-top: 5px solid var(--modal-border-top);
     position: relative;
 }
 
@@ -597,11 +735,11 @@ body.sidebar-open .content {
 }
 
 .modal-close:hover {
-    color: var(--orange-deep);
+    color: var(--primary-main);
 }
 
 /* =============================================
-   PANEL ADMIN (TONALIDAD NARANJA)
+   PANEL ADMIN (COMPARTE LA MISMA TONALIDAD)
    ============================================= */
 .admin-body {
     background: var(--bg-page);
@@ -609,7 +747,7 @@ body.sidebar-open .content {
 }
 
 .admin-header {
-    background: linear-gradient(135deg, var(--orange-primary) 0%, var(--orange-dark) 100%);
+    background: var(--primary-gradient);
     color: #ffffff;
     padding: 1.1rem 2rem;
     display: flex;
@@ -626,7 +764,13 @@ body.sidebar-open .content {
     font-weight: 800;
 }
 
-.admin-header a {
+.admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-header a, .admin-theme-btn {
     color: #ffffff;
     text-decoration: none;
     font-size: 0.88rem;
@@ -635,10 +779,15 @@ body.sidebar-open .content {
     padding: 0.4rem 1.1rem;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
     transition: background 0.2s;
 }
 
-.admin-header a:hover {
+.admin-header a:hover, .admin-theme-btn:hover {
     background: rgba(255, 255, 255, 0.32);
 }
 
@@ -663,11 +812,11 @@ body.sidebar-open .content {
     margin: 0 0 1.2rem;
     font-size: 1.1rem;
     font-weight: 800;
-    color: var(--orange-dark);
+    color: var(--primary-main);
     display: flex;
     align-items: center;
     gap: 8px;
-    border-bottom: 2px solid rgba(255, 140, 0, 0.15);
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.6rem;
 }
 
@@ -699,20 +848,21 @@ body.sidebar-open .content {
 .admin-section select {
     padding: 0.65rem 0.85rem;
     width: 100%;
-    border: 1.5px solid #dcdcdc;
+    border: 1.5px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-family: 'Inter', sans-serif;
     font-size: 0.92rem;
-    background: #fafafa;
+    background: var(--bg-card-hover);
+    color: var(--text-main);
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .admin-section input:focus,
 .admin-section select:focus {
-    border-color: var(--orange-primary);
-    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15);
-    background: #ffffff;
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background: var(--bg-card);
 }
 
 .btn-admin {
@@ -720,7 +870,7 @@ body.sidebar-open .content {
     align-items: center;
     gap: 8px;
     padding: 0.7rem 1.6rem;
-    background: linear-gradient(135deg, var(--orange-primary), var(--orange-dark));
+    background: var(--primary-gradient);
     color: #ffffff;
     border: none;
     border-radius: var(--radius-sm);
@@ -728,13 +878,13 @@ body.sidebar-open .content {
     font-size: 0.92rem;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.25);
+    box-shadow: var(--shadow-sm);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-admin:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(230, 81, 0, 0.35);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-login {
@@ -743,9 +893,9 @@ body.sidebar-open .content {
     justify-content: center;
     gap: 10px;
     padding: 0.8rem 1.6rem;
-    background: #ffffff;
-    color: #333333;
-    border: 1.5px solid #dadce0;
+    background: var(--bg-card);
+    color: var(--text-main);
+    border: 1.5px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
@@ -757,7 +907,7 @@ body.sidebar-open .content {
 }
 
 .btn-login:hover {
-    background: #f8f9fa;
+    background: var(--bg-card-hover);
     box-shadow: var(--shadow-md);
 }
 
@@ -772,18 +922,19 @@ body.sidebar-open .content {
 
 .table-filter {
     padding: 0.55rem 0.85rem;
-    border: 1.5px solid #dcdcdc;
+    border: 1.5px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-family: 'Inter', sans-serif;
     font-size: 0.88rem;
-    background: #fafafa;
+    background: var(--bg-card-hover);
+    color: var(--text-main);
     outline: none;
 }
 
 .table-filter:focus {
-    border-color: var(--orange-primary);
-    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15);
-    background: #ffffff;
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    background: var(--bg-card);
 }
 
 .table-search {
@@ -804,14 +955,14 @@ body.sidebar-open .content {
 }
 
 .pdf-table thead th {
-    background: #fff8f3;
-    color: var(--orange-dark);
+    background: var(--table-th-bg);
+    color: var(--table-th-color);
     font-weight: 800;
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0.75rem 0.9rem;
-    border-bottom: 2px solid rgba(255, 140, 0, 0.15);
+    border-bottom: 2px solid var(--border-color);
     text-align: left;
 }
 
@@ -821,7 +972,7 @@ body.sidebar-open .content {
 }
 
 .pdf-table tbody tr:hover {
-    background: #fffdfb;
+    background: var(--table-hover-bg);
 }
 
 .pdf-table td {
@@ -830,13 +981,12 @@ body.sidebar-open .content {
 }
 
 .pdf-table td a {
-    color: var(--orange-dark);
+    color: var(--primary-main);
     text-decoration: none;
     font-weight: 700;
 }
 
 .pdf-table td a:hover {
-    color: var(--orange-deep);
     text-decoration: underline;
 }
 
@@ -848,9 +998,9 @@ body.sidebar-open .content {
     font-weight: 800;
 }
 
-.badge-res  { background: #ffe8d6; color: #a04000; }
+.badge-res  { background: var(--badge-res-bg); color: var(--badge-res-color); }
 .badge-ej   { background: #e0f2fe; color: #0369a1; }
-.badge-asig { background: #fef3c7; color: #92400e; }
+.badge-asig { background: var(--badge-asig-bg); color: var(--badge-asig-color); }
 
 .tbl-btn {
     padding: 0.35rem 0.75rem;
@@ -867,7 +1017,7 @@ body.sidebar-open .content {
     transform: scale(1.05);
 }
 
-.tbl-btn-edit { background: #e0f2fe; color: #0284c7; }
+.tbl-btn-edit   { background: #e0f2fe; color: #0284c7; }
 .tbl-btn-delete { background: #fee2e2; color: #dc2626; }
 
 /* =============================================
@@ -881,6 +1031,10 @@ body.sidebar-open .content {
 
     body.sidebar-open #toggleSidebar {
         left: calc(var(--sidebar-width) + 14px);
+    }
+
+    .theme-toggle-btn, body:has(#index-fixed) .theme-toggle-btn {
+        right: 14px !important;
     }
 
     .content, body:has(#index-fixed) .content {

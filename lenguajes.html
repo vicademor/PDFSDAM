@@ -6,12 +6,20 @@
     <title>PDFSDAM - Lenguajes de Marcas</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body data-asignatura="lenguajes">
 <button id="toggleSidebar" aria-label="Abrir menú de navegación">
     <span>☰</span>
     <span>Categorías</span>
 </button>
+
+<button id="themeToggle" class="theme-toggle-btn" aria-label="Cambiar tema">🌙 Modo Oscuro</button>
 
 <div class="container">
     <nav class="sidebar" id="sidebar">
@@ -55,10 +63,10 @@
             </li>
 
             <li class="sidebar-sep"><a href="admin.html" class="sidebar-admin">⚙️ Panel Admin</a></li>
+            <li><button id="sidebarThemeToggle" class="sidebar-theme-btn">🌙 Modo Oscuro</button></li>
         </ul>
     </nav>
 
-    <!-- Contenido principal -->
     <main class="content">
         <header>
             <h1>PDFSDAM - Lenguajes de Marcas</h1>
@@ -78,14 +86,12 @@
         <!-- Resúmenes -->
         <section id="resumenes">
             <h2>Resúmenes</h2>
-            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 
         <!-- Ejercicios -->
         <section id="ejercicios">
             <h2>Ejercicios</h2>
-            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 

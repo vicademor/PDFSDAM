@@ -34,15 +34,37 @@ function getAccessTokenFromHash() {
     return h.get("access_token");
 }
 
-// ============================================================
-// Estado global de PDFs (para filtros sin re-fetch)
-// ============================================================
-let allPdfs = {}; // { firebaseKey: pdfObject }
+let allPdfs = {};
 
-// ============================================================
-// LÓGICA PRINCIPAL
-// ============================================================
 document.addEventListener("DOMContentLoaded", () => {
+    // ==========================================
+    // SISTEMA DE MODO CLARO / MODO OSCURO (ADMIN)
+    // ==========================================
+    const themeToggleBtn = document.getElementById('themeToggle');
+
+    function updateThemeButton(theme) {
+        if (themeToggleBtn) {
+            themeToggleBtn.textContent = theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+        }
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        updateThemeButton(next);
+    }
+
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateThemeButton(currentTheme);
+
+    if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+
+    // ==========================================
+    // LOGIN & AUTH DRIVE
+    // ==========================================
     let accessToken = getAccessTokenFromHash();
 
     const loginBtn = document.getElementById("loginBtn");
@@ -59,17 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (accessToken) {
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
-        document.getElementById("uploadSection").style.display    = "block";
-        document.getElementById("manageSection").style.display    = "block";
+        document.getElementById("uploadSection").style.display      = "block";
+        document.getElementById("manageSection").style.display      = "block";
         document.getElementById("asignaturasSection").style.display = "block";
         cargarAsignaturasEnSelect();
         cargarListaPDFs();
         inicializarFiltros();
     }
 
-    // ============================================================
+    // ==========================================
     // ASIGNATURAS DINÁMICAS → SELECT
-    // ============================================================
+    // ==========================================
     function cargarAsignaturasEnSelect() {
         const selectEl = document.getElementById("asignatura");
         if (!selectEl) return;
@@ -90,9 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ============================================================
+    // ==========================================
     // CREAR ASIGNATURA
-    // ============================================================
+    // ==========================================
     const crearAsignaturaBtn = document.getElementById("crearAsignaturaBtn");
     const asignaturaStatus   = document.getElementById("asignaturaStatus");
 
@@ -128,9 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ============================================================
+    // ==========================================
     // SUBIDA A DRIVE
-    // ============================================================
+    // ==========================================
     async function uploadFileToDrive(fileBlob, filename) {
         const ext = filename.split(".").pop().toLowerCase();
         let mimeType = "application/octet-stream";
@@ -172,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return newRef.key;
     }
 
-    // Manejo de subida de archivo
     if (input) {
         input.addEventListener("change", async (e) => {
             const file = e.target.files[0];
@@ -216,15 +237,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     link.setAttribute("download", nombre);
                     link.removeAttribute("target");
                 }
+                cargarListaPDFs();
             } catch (err) {
                 status.textContent = "❌ Error: " + err.message;
             }
         });
     }
 
-    // ============================================================
+    // ==========================================
     // TABLA DE ARCHIVOS CON FILTROS
-    // ============================================================
+    // ==========================================
     function inicializarFiltros() {
         const searchInput  = document.getElementById("filterSearch");
         const asigFilter   = document.getElementById("filterAsig");
@@ -246,9 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function populateAsigFilter() {
         const asigFilter = document.getElementById("filterAsig");
         if (!asigFilter) return;
-        // Guardar valor seleccionado
         const prev = asigFilter.value;
-        // Limpiar opciones dinámicas
         asigFilter.querySelectorAll('option:not([value=""])').forEach(o => o.remove());
 
         const asigs = [...new Set(Object.values(allPdfs).map(p => p.asignatura))].sort();
@@ -315,7 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 </td>
             `;
 
-            // Editar
             tr.querySelector('.tbl-btn-edit').addEventListener("click", async () => {
                 const nuevoTema   = prompt("Nuevo tema:", pdf.tema);
                 const nuevoNombre = prompt("Nuevo nombre:", pdf.nombre);
@@ -328,7 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Eliminar
             tr.querySelector('.tbl-btn-delete').addEventListener("click", async () => {
                 if (!confirm(`¿Eliminar "${pdf.nombre}"?`)) return;
                 try {

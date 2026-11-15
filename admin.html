@@ -6,12 +6,21 @@
     <title>Panel Admin - PDFSDAM</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body class="admin-body">
 
 <div class="admin-header">
     <h2>⚙️ Panel de Administración PDFSDAM</h2>
-    <a href="index.html">🏠 Volver al inicio</a>
+    <div class="admin-header-actions">
+        <button id="themeToggle" class="admin-theme-btn" aria-label="Cambiar tema">🌙 Modo Oscuro</button>
+        <a href="index.html">🏠 Volver al inicio</a>
+    </div>
 </div>
 
 <div class="admin-main">
@@ -42,7 +51,6 @@
                     <option value="bases">Bases de Datos</option>
                     <option value="entornos">Entornos de Desarrollo</option>
                     <option value="lenguajes">Lenguajes de Marcas</option>
-                    <!-- Las asignaturas dinámicas se cargan aquí por JS -->
                 </select>
             </div>
 
@@ -72,7 +80,7 @@
 
         <progress id="uploadProgress" value="0" max="100"></progress>
         <p id="uploadStatus">Esperando archivo...</p>
-        <a id="downloadLink" href="#" target="_blank" style="display:none; color: var(--orange-dark); font-weight: 600; font-size: 0.9rem;">Ver archivo subido</a>
+        <a id="downloadLink" href="#" target="_blank" style="display:none; color: var(--primary-main); font-weight: 700; font-size: 0.9rem;">Ver archivo subido</a>
     </section>
 
     <!-- Gestión de asignaturas -->
@@ -153,7 +161,6 @@
 
 </div>
 
-<!-- Script principal -->
 <script type="module" src="js/admin.js"></script>
 </body>
 </html>
