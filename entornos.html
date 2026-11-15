@@ -8,19 +8,27 @@
     <link rel="icon" href="icon.png">
 </head>
 <body data-asignatura="entornos">
-<button id="toggleSidebar">☰ Categorías</button>
+<button id="toggleSidebar" aria-label="Abrir menú de navegación">
+    <span>☰</span>
+    <span>Categorías</span>
+</button>
 
 <div class="container">
-    <!-- Sidebar izquierda -->
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-logo">PDFSDAM</div>
+        <div class="sidebar-logo">
+            <span class="sidebar-logo-text">PDFSDAM</span>
+            <span class="sidebar-logo-badge">DAM</span>
+        </div>
         <ul class="sidebar-nav">
             <li><a href="index.html" class="sidebar-home">🏠 Inicio</a></li>
 
             <!-- Desplegable 1º DAM -->
             <li class="dropdown-item">
                 <button class="dropdown-toggle" data-target="dam1-list">
-                    <span>1º DAM</span>
+                    <span class="dropdown-label">
+                        <span>1º DAM</span>
+                        <span class="dam-badge">1º</span>
+                    </span>
                     <span class="arrow">▾</span>
                 </button>
                 <ul class="dropdown-list" id="dam1-list">
@@ -29,18 +37,19 @@
                     <li><a href="bases.html"        data-asignatura-id="bases">Bases de Datos</a></li>
                     <li><a href="entornos.html"     data-asignatura-id="entornos">Entornos de Desarrollo</a></li>
                     <li><a href="lenguajes.html"    data-asignatura-id="lenguajes">Lenguajes de Marcas</a></li>
-                    <!-- asignaturas dinámicas de 1º DAM se insertan aquí por JS -->
                 </ul>
             </li>
 
             <!-- Desplegable 2º DAM -->
             <li class="dropdown-item">
                 <button class="dropdown-toggle" data-target="dam2-list">
-                    <span>2º DAM</span>
+                    <span class="dropdown-label">
+                        <span>2º DAM</span>
+                        <span class="dam-badge">2º</span>
+                    </span>
                     <span class="arrow">▾</span>
                 </button>
                 <ul class="dropdown-list" id="dam2-list">
-                    <!-- asignaturas dinámicas de 2º DAM se insertan aquí por JS -->
                     <li class="empty-msg">Sin asignaturas aún</li>
                 </ul>
             </li>
@@ -52,8 +61,8 @@
     <!-- Contenido principal -->
     <main class="content">
         <header>
-            <h1 style="color:whitesmoke">PDFSDAM - Entornos de Desarrollo</h1>
-            <p style="color: white"><b>Todos los recursos de Entornos de Desarrollo en un solo lugar</b></p>
+            <h1>PDFSDAM - Entornos de Desarrollo</h1>
+            <p>Todos los recursos de Entornos de Desarrollo en un solo lugar</p>
         </header>
 
         <!-- Índice derecho fijo -->
@@ -69,20 +78,21 @@
         <!-- Resúmenes -->
         <section id="resumenes">
             <h2>Resúmenes</h2>
-            <!-- 🔥 Cards dinámicas desde Firebase -->
+            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 
         <!-- Ejercicios -->
         <section id="ejercicios">
             <h2>Ejercicios</h2>
-            <!-- 🔥 Cards dinámicas desde Firebase -->
+            <!-- Cards dinámicas desde Firebase -->
             <div class="section-cards"></div>
         </section>
 
         <!-- Links -->
         <section id="links">
             <h2>Páginas de interés</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Enlaces recomendados para la asignatura:</p>
             <div class="section-cards">
                 <a href="https://jmabadlopez.github.io/programacion/site/" target="_blank" class="card">Página José</a>
                 <a href="https://aceptaelreto.com" target="_blank" class="card">Acepta el reto</a>
@@ -103,7 +113,6 @@
     </div>
 </div>
 
-<!-- 🔧 Importar app.js como módulo -->
 <script type="module" src="js/app.js"></script>
 </body>
 </html>

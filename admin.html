@@ -11,79 +11,144 @@
 
 <div class="admin-header">
     <h2>⚙️ Panel de Administración PDFSDAM</h2>
-    <a href="index.html">🏠 Inicio</a>
+    <a href="index.html">🏠 Volver al inicio</a>
 </div>
 
 <div class="admin-main">
 
     <!-- Login con Google -->
     <section class="admin-section" id="loginSection">
-        <h3>Acceso</h3>
-        <button class="btn-login" id="loginBtn">🔑 Login con Google</button>
+        <h3>Acceso al Panel</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem;">
+            Inicia sesión con tu cuenta de Google autorizada para gestionar archivos y asignaturas de Google Drive y Firebase.
+        </p>
+        <button class="btn-login" id="loginBtn">
+            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.79l7.97-6.2z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Iniciar sesión con Google
+        </button>
         <p id="loginStatus"></p>
     </section>
 
     <!-- Subida de PDFs -->
     <section class="admin-section" id="uploadSection" style="display:none">
-        <h3>Subir archivo</h3>
+        <h3>Subir nuevo archivo</h3>
 
-        <label for="asignatura">Asignatura:</label>
-        <select id="asignatura">
-            <option value="programacion">Programación</option>
-            <option value="sistemas">Sistemas</option>
-            <option value="bases">Bases</option>
-            <option value="entornos">Entornos</option>
-            <option value="lenguajes">Lenguajes</option>
-            <!-- Las asignaturas dinámicas se cargan aquí por JS -->
-        </select>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="asignatura">Asignatura</label>
+                <select id="asignatura">
+                    <option value="programacion">Programación</option>
+                    <option value="sistemas">Sistemas Informáticos</option>
+                    <option value="bases">Bases de Datos</option>
+                    <option value="entornos">Entornos de Desarrollo</option>
+                    <option value="lenguajes">Lenguajes de Marcas</option>
+                    <!-- Las asignaturas dinámicas se cargan aquí por JS -->
+                </select>
+            </div>
 
-        <label for="tipo">Tipo:</label>
-        <select id="tipo">
-            <option value="resumenes">Resumen</option>
-            <option value="ejercicios">Ejercicio</option>
-        </select>
+            <div class="form-group">
+                <label for="tipo">Tipo de recurso</label>
+                <select id="tipo">
+                    <option value="resumenes">Resumen (PDF)</option>
+                    <option value="ejercicios">Ejercicio (PDF, Java, RAR)</option>
+                </select>
+            </div>
 
-        <label for="tema">Tema:</label>
-        <input id="tema" type="text">
+            <div class="form-group">
+                <label for="tema">Tema o Unidad</label>
+                <input id="tema" type="text" placeholder="Ej: Tema 1 - Introducción">
+            </div>
 
-        <label for="nombre">Nombre del archivo:</label>
-        <input id="nombre" type="text">
+            <div class="form-group">
+                <label for="nombre">Nombre visible del archivo</label>
+                <input id="nombre" type="text" placeholder="Ej: Resumen_T1.pdf">
+            </div>
 
-        <label for="pdfInput">Selecciona archivo:</label>
-        <input id="pdfInput" type="file" accept=".pdf,.java,.rar">
+            <div class="form-group full">
+                <label for="pdfInput">Seleccionar archivo</label>
+                <input id="pdfInput" type="file" accept=".pdf,.java,.rar">
+            </div>
+        </div>
 
         <progress id="uploadProgress" value="0" max="100"></progress>
         <p id="uploadStatus">Esperando archivo...</p>
-        <a id="downloadLink" href="#" target="_blank" style="display:none;">Ver archivo subido</a>
+        <a id="downloadLink" href="#" target="_blank" style="display:none; color: var(--orange-dark); font-weight: 600; font-size: 0.9rem;">Ver archivo subido</a>
     </section>
 
     <!-- Gestión de asignaturas -->
     <section class="admin-section" id="asignaturasSection" style="display:none">
         <h3>Añadir nueva asignatura</h3>
 
-        <label for="asignaturaId">ID (sin espacios, minúsculas, ej: "redes"):</label>
-        <input id="asignaturaId" type="text" placeholder="redes">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="asignaturaId">ID identificador (ej: redes, fol)</label>
+                <input id="asignaturaId" type="text" placeholder="sin espacios ni tildes">
+            </div>
 
-        <label for="asignaturaNombre">Nombre completo:</label>
-        <input id="asignaturaNombre" type="text" placeholder="Redes de Comunicaciones">
+            <div class="form-group">
+                <label for="asignaturaNombre">Nombre completo</label>
+                <input id="asignaturaNombre" type="text" placeholder="Ej: Redes Locales">
+            </div>
 
-        <label for="asignaturaCurso">Curso:</label>
-        <select id="asignaturaCurso">
-            <option value="1">1º DAM</option>
-            <option value="2">2º DAM</option>
-        </select>
+            <div class="form-group">
+                <label for="asignaturaCurso">Curso DAM</label>
+                <select id="asignaturaCurso">
+                    <option value="1">1º DAM</option>
+                    <option value="2">2º DAM</option>
+                </select>
+            </div>
 
-        <label for="asignaturaDesc">Descripción (opcional):</label>
-        <input id="asignaturaDesc" type="text">
+            <div class="form-group">
+                <label for="asignaturaDesc">Descripción (opcional)</label>
+                <input id="asignaturaDesc" type="text" placeholder="Breve descripción">
+            </div>
+        </div>
 
-        <button class="btn-admin" id="crearAsignaturaBtn">➕ Crear asignatura</button>
+        <div class="btn-row">
+            <button class="btn-admin" id="crearAsignaturaBtn">➕ Crear asignatura</button>
+        </div>
         <p id="asignaturaStatus"></p>
     </section>
 
-    <!-- Gestión de PDFs -->
+    <!-- Gestión de PDFs en Tabla con Filtros -->
     <section class="admin-section" id="manageSection" style="display:none">
-        <h3>Gestionar archivos</h3>
-        <div id="pdfList">Cargando lista...</div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem;">
+            <h3 style="margin: 0; padding: 0; border: none;">Gestionar archivos subidos</h3>
+            <span class="table-count" id="tableCount">0 archivos</span>
+        </div>
+
+        <!-- Filtros y buscador -->
+        <div class="table-toolbar">
+            <input type="text" id="filterSearch" class="table-filter table-search" placeholder="🔍 Buscar por nombre, tema o asignatura...">
+            <select id="filterAsig" class="table-filter">
+                <option value="">Todas las asignaturas</option>
+            </select>
+            <select id="filterTipo" class="table-filter">
+                <option value="">Todos los tipos</option>
+                <option value="resumenes">Resúmenes</option>
+                <option value="ejercicios">Ejercicios</option>
+            </select>
+        </div>
+
+        <!-- Tabla -->
+        <div class="pdf-table-wrap">
+            <table class="pdf-table">
+                <thead>
+                    <tr>
+                        <th>Archivo</th>
+                        <th>Asignatura</th>
+                        <th>Tipo</th>
+                        <th>Tema</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="pdfTbody">
+                    <tr>
+                        <td colspan="5" class="table-empty">Cargando archivos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
 </div>

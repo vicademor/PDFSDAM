@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDFSDAM</title>
+    <title>PDFSDAM - Inicio</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="orange">
+    <meta name="theme-color" content="#ff8c00">
 </head>
 <body data-asignatura="index">
-<button id="toggleSidebar">☰ Categorías</button>
+<button id="toggleSidebar" aria-label="Abrir menú de navegación">
+    <span>☰</span>
+    <span>Categorías</span>
+</button>
 
 <div class="container">
     <nav class="sidebar" id="sidebar">
-        <div class="sidebar-logo">PDFSDAM</div>
+        <div class="sidebar-logo">
+            <span class="sidebar-logo-text">PDFSDAM</span>
+            <span class="sidebar-logo-badge">DAM</span>
+        </div>
         <ul class="sidebar-nav">
             <li><a href="index.html" class="sidebar-home active">🏠 Inicio</a></li>
 
             <!-- Desplegable 1º DAM -->
             <li class="dropdown-item">
                 <button class="dropdown-toggle" data-target="dam1-list">
-                    <span>1º DAM</span>
+                    <span class="dropdown-label">
+                        <span>1º DAM</span>
+                        <span class="dam-badge">1º</span>
+                    </span>
                     <span class="arrow">▾</span>
                 </button>
                 <ul class="dropdown-list" id="dam1-list">
@@ -30,18 +39,19 @@
                     <li><a href="bases.html"        data-asignatura-id="bases">Bases de Datos</a></li>
                     <li><a href="entornos.html"     data-asignatura-id="entornos">Entornos de Desarrollo</a></li>
                     <li><a href="lenguajes.html"    data-asignatura-id="lenguajes">Lenguajes de Marcas</a></li>
-                    <!-- asignaturas dinámicas de 1º DAM se insertan aquí por JS -->
                 </ul>
             </li>
 
             <!-- Desplegable 2º DAM -->
             <li class="dropdown-item">
                 <button class="dropdown-toggle" data-target="dam2-list">
-                    <span>2º DAM</span>
+                    <span class="dropdown-label">
+                        <span>2º DAM</span>
+                        <span class="dam-badge">2º</span>
+                    </span>
                     <span class="arrow">▾</span>
                 </button>
                 <ul class="dropdown-list" id="dam2-list">
-                    <!-- asignaturas dinámicas de 2º DAM se insertan aquí por JS -->
                     <li class="empty-msg">Sin asignaturas aún</li>
                 </ul>
             </li>
@@ -50,38 +60,42 @@
         </ul>
     </nav>
 
-    <main class="content">
+    <main class="content" style="margin-right: 24px; max-width: 980px;">
         <header style="right: 0px">
             <h1>PDFSDAM</h1>
-            <p>Todos los recursos de clase en un solo lugar</p>
+            <p>Todos los recursos y apuntes de clase en un solo lugar</p>
         </header>
 
         <section class="welcome">
             <div class="welcome-inner">
                 <h2>Bienvenido a PDFSDAM</h2>
-                <p>Selecciona una categoría en la barra lateral para acceder a los archivos de clase.</p>
-                <p>Esta página ha sido creada en su mayoría por IA, no soy un profesional, pero es trabajo honesto.</p>
-                <a href="https://github.com/vicademor" class="btn-primary">Mi perfil de GitHub</a>
+                <p>Selecciona una categoría en la barra lateral para acceder a resúmenes, ejercicios y enlaces de clase.</p>
+                <p style="font-size: 0.85rem; opacity: 0.85;">Página de recursos compartidos para estudiantes de Desarrollo de Aplicaciones Multiplataforma.</p>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://github.com/vicademor" target="_blank" class="btn-primary">Mi perfil de GitHub ↗</a>
+                </div>
             </div>
         </section>
+
         <section class="personal-projects">
-            <h2>Mis proyectos</h2>
-            <p>Aquí subiré algunos de mis proyectos personales.</p>
+            <h2>Mis proyectos destacados</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.2rem;">Aquí comparto algunos de mis desarrollos y retos algorítmicos personales.</p>
             <div class="project-cards">
                 <div class="card">
-                    <b>Proyecto Tortitas</b>
-                    <p>Reto algorítmico en Java</p>
-                    <a href="proyectos/TortitasFinal.java" download>Descargar</a>
+                    <b style="font-size: 1rem;">Proyecto Tortitas</b>
+                    <p style="font-size: 0.85rem; opacity: 0.9;">Reto algorítmico en Java resuelto con optimización.</p>
+                    <a href="proyectos/TortitasFinal.java" download>Descargar .java ⬇</a>
                 </div>
                 <div class="card">
-                    <b>Proyecto U02</b>
-                    <p>Descripción breve del proyecto.</p>
-                    <a href="proyectos/proyecto2.zip" download>Descargar</a>
+                    <b style="font-size: 1rem;">Proyecto U02</b>
+                    <p style="font-size: 0.85rem; opacity: 0.9;">Paquete de ejercicios y prácticas de la Unidad 2.</p>
+                    <a href="proyectos/proyecto2.zip" download>Descargar .zip ⬇</a>
                 </div>
             </div>
         </section>
     </main>
 </div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";

@@ -12,11 +12,10 @@ const firebaseConfig = {
     measurementId: "G-PXS4C0EZN9"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
-// Asignaturas estáticas de 1º DAM (id -> { href, nombre })
+// Asignaturas estáticas de 1º DAM
 const DAM1_ESTATICAS = {
     programacion: { href: "programacion.html", nombre: "Programación" },
     sistemas:     { href: "sistemas.html",     nombre: "Sistemas Informáticos" },
@@ -54,28 +53,27 @@ document.addEventListener("DOMContentLoaded", () => {
     // DESPLEGABLES DE LA SIDEBAR
     // ==========================================
     const asignaturaActual = document.body.dataset.asignatura || "";
-
-    // IDs de asignaturas estáticas de 1º DAM
     const dam1Ids = Object.keys(DAM1_ESTATICAS);
 
-    // Determinar qué DAM contiene la asignatura actual
-    // (para asignaturas dinámicas se resolverá al cargar Firebase)
     let currentDam = null;
-    if (dam1Ids.includes(asignaturaActual)) {
-        currentDam = "1";
-    }
+    if (dam1Ids.includes(asignaturaActual)) currentDam = "1";
 
-    // Función genérica para manejar toggle de un desplegable
+    // Función toggle de un desplegable
     function setupToggle(btnEl, listEl) {
         if (!btnEl || !listEl) return;
         btnEl.addEventListener('click', () => {
             const isOpen = listEl.classList.contains('open');
-            listEl.classList.toggle('open', !isOpen);
-            btnEl.classList.toggle('open', !isOpen);
+            // Cerrar todos
+            document.querySelectorAll('.dropdown-list.open').forEach(el => el.classList.remove('open'));
+            document.querySelectorAll('.dropdown-toggle.open').forEach(el => el.classList.remove('open'));
+            // Abrir el clickado si estaba cerrado
+            if (!isOpen) {
+                listEl.classList.add('open');
+                btnEl.classList.add('open');
+            }
         });
     }
 
-    // Función para abrir un desplegable específico
     function openDropdown(btnEl, listEl) {
         if (!btnEl || !listEl) return;
         listEl.classList.add('open');
@@ -90,17 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
     setupToggle(dam1Btn, dam1List);
     setupToggle(dam2Btn, dam2List);
 
-    // Marcar enlace activo en 1º DAM estáticas y abrir si corresponde
+    // Marcar enlace activo en 1º DAM estáticas
     if (dam1List) {
-        const links = dam1List.querySelectorAll('a[data-asignatura-id]');
-        links.forEach(a => {
+        dam1List.querySelectorAll('a[data-asignatura-id]').forEach(a => {
             if (a.dataset.asignaturaId === asignaturaActual) {
                 a.classList.add('active');
             }
         });
-        if (currentDam === "1") {
-            openDropdown(dam1Btn, dam1List);
-        }
+        if (currentDam === "1") openDropdown(dam1Btn, dam1List);
     }
 
     // ==========================================
@@ -108,10 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     onValue(ref(db, "asignaturas"), snapshot => {
         if (!snapshot.exists()) return;
-
         const asignaturas = snapshot.val();
 
-        // Limpiar mensajes vacíos previos de asignaturas dinámicas
+        // Limpiar dinámicas previas
         [dam1List, dam2List].forEach(list => {
             if (!list) return;
             list.querySelectorAll('.dynamic-asignatura').forEach(el => el.remove());
@@ -122,10 +116,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetList = curso === "2" ? dam2List : dam1List;
             if (!targetList) return;
 
-            // No duplicar si ya está como estática
+            // No duplicar estáticas
             if (DAM1_ESTATICAS[id]) return;
 
-            // Quitar mensaje "Sin asignaturas aún" si existe
+            // Quitar placeholder vacío
             const emptyMsg = targetList.querySelector('.empty-msg');
             if (emptyMsg) emptyMsg.remove();
 
@@ -134,15 +128,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const a = document.createElement('a');
             a.href = `asignatura.html?id=${encodeURIComponent(id)}`;
             a.textContent = data.nombre || id;
+
             if (asignaturaActual === id) {
                 a.classList.add('active');
-                // Abrir el desplegable del DAM correspondiente
-                if (curso === "2") {
-                    openDropdown(dam2Btn, dam2List);
-                } else {
-                    openDropdown(dam1Btn, dam1List);
-                }
+                if (curso === "2") openDropdown(dam2Btn, dam2List);
+                else               openDropdown(dam1Btn, dam1List);
             }
+
             li.appendChild(a);
             targetList.appendChild(li);
         });
@@ -166,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = asignaturas[asignatura]?.[section]?.[topic] || [];
         if (data.length === 0) {
-            modalContent.textContent = "No hay PDFs disponibles para este tema.";
+            modalContent.textContent = "No hay archivos disponibles para este tema.";
         } else {
             data.forEach(item => {
                 const a = document.createElement('a');
@@ -180,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalOverlay.style.display = 'flex';
     }
 
-    // Escuchar cambios en tiempo real y reconstruir cards de PDFs
+    // Escuchar PDFs en tiempo real
     onValue(ref(db, "pdfs"), snapshot => {
         const asignaturas = {};
         if (!snapshot.exists()) return;
@@ -193,7 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
             asignaturas[asignatura][tipo][tema].push({ name: nombre, link: urlPreview });
         });
 
-        // Detectar asignatura actual desde el body
         const asigActual = document.body.dataset.asignatura;
 
         ["resumenes", "ejercicios"].forEach(tipo => {
@@ -201,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!section) return;
             section.innerHTML = "";
 
-            if (asignaturas[asigActual] && asignaturas[asigActual][tipo]) {
+            if (asignaturas[asigActual]?.[tipo]) {
                 Object.keys(asignaturas[asigActual][tipo]).forEach(tema => {
                     const card = document.createElement("div");
                     card.className = "topic-card";
@@ -210,14 +201,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     card.dataset.topic = tema;
                     card.textContent = tema;
                     section.appendChild(card);
-
                     card.onclick = () => abrirModal(asignaturas, card);
                 });
             }
         });
     });
 
-    // --- Cerrar modal ---
+    // Cerrar modal
     if (modalClose) {
         modalClose.addEventListener('click', () => (modalOverlay.style.display = 'none'));
     }

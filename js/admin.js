@@ -1,4 +1,4 @@
-// --- Configuración Firebase (solo para DB) ---
+// --- Configuración Firebase ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getDatabase, ref, push, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
@@ -12,9 +12,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db  = getDatabase(app);
 
-// --- Configuración OAuth Google Drive ---
+// OAuth Google Drive
 const GOOGLE_CLIENT_ID = "836229684120-8t8tisi28lck0af74b76rdeufapdtse7.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 
@@ -34,7 +34,14 @@ function getAccessTokenFromHash() {
     return h.get("access_token");
 }
 
-// --- Lógica principal ---
+// ============================================================
+// Estado global de PDFs (para filtros sin re-fetch)
+// ============================================================
+let allPdfs = {}; // { firebaseKey: pdfObject }
+
+// ============================================================
+// LÓGICA PRINCIPAL
+// ============================================================
 document.addEventListener("DOMContentLoaded", () => {
     let accessToken = getAccessTokenFromHash();
 
@@ -51,34 +58,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (accessToken) {
-        console.log("✅ Token activo:", accessToken);
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
-        document.getElementById("uploadSection").style.display = "block";
-        document.getElementById("manageSection").style.display = "block";
+        document.getElementById("uploadSection").style.display    = "block";
+        document.getElementById("manageSection").style.display    = "block";
         document.getElementById("asignaturasSection").style.display = "block";
-        cargarListaPDFs();
         cargarAsignaturasEnSelect();
+        cargarListaPDFs();
+        inicializarFiltros();
     }
 
-    // ==========================================
-    // CARGAR ASIGNATURAS DINÁMICAS EN EL SELECT
-    // ==========================================
+    // ============================================================
+    // ASIGNATURAS DINÁMICAS → SELECT
+    // ============================================================
     function cargarAsignaturasEnSelect() {
         const selectEl = document.getElementById("asignatura");
         if (!selectEl) return;
 
         onValue(ref(db, "asignaturas"), snapshot => {
-            // Eliminar opciones dinámicas previas
             selectEl.querySelectorAll('option.dynamic-opt').forEach(o => o.remove());
-
             if (!snapshot.exists()) return;
-            const asignaturas = snapshot.val();
 
-            Object.entries(asignaturas).forEach(([id, data]) => {
-                // Evitar duplicar las 5 estáticas
-                const estaticas = ["programacion", "sistemas", "bases", "entornos", "lenguajes"];
+            const estaticas = ["programacion", "sistemas", "bases", "entornos", "lenguajes"];
+            Object.entries(snapshot.val()).forEach(([id, data]) => {
                 if (estaticas.includes(id)) return;
-
                 const opt = document.createElement('option');
                 opt.value = id;
                 opt.textContent = data.nombre || id;
@@ -88,9 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ==========================================
-    // GESTIÓN DE ASIGNATURAS
-    // ==========================================
+    // ============================================================
+    // CREAR ASIGNATURA
+    // ============================================================
     const crearAsignaturaBtn = document.getElementById("crearAsignaturaBtn");
     const asignaturaStatus   = document.getElementById("asignaturaStatus");
 
@@ -105,51 +107,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 asignaturaStatus.textContent = "⚠️ El ID y el nombre son obligatorios.";
                 return;
             }
-
             if (!/^[a-z0-9-]+$/.test(id)) {
                 asignaturaStatus.textContent = "⚠️ El ID solo puede contener letras minúsculas, números y guiones.";
                 return;
             }
 
+            crearAsignaturaBtn.disabled = true;
+            asignaturaStatus.textContent = "⏳ Guardando...";
             try {
-                asignaturaStatus.textContent = "⏳ Guardando...";
-                await set(ref(db, "asignaturas/" + id), {
-                    id,
-                    nombre,
-                    curso,
-                    descripcion,
-                    createdAt: Date.now()
-                });
-                asignaturaStatus.textContent = `✅ Asignatura "${nombre}" creada correctamente.`;
+                await set(ref(db, "asignaturas/" + id), { id, nombre, curso, descripcion, createdAt: Date.now() });
+                asignaturaStatus.textContent = `✅ Asignatura "${nombre}" creada.`;
                 document.getElementById("asignaturaId").value = "";
                 document.getElementById("asignaturaNombre").value = "";
                 document.getElementById("asignaturaDesc").value = "";
             } catch (err) {
                 asignaturaStatus.textContent = "❌ Error: " + err.message;
+            } finally {
+                crearAsignaturaBtn.disabled = false;
             }
         });
     }
 
-    // ==========================================
+    // ============================================================
     // SUBIDA A DRIVE
-    // ==========================================
+    // ============================================================
     async function uploadFileToDrive(fileBlob, filename) {
         const ext = filename.split(".").pop().toLowerCase();
-
         let mimeType = "application/octet-stream";
         if (ext === "pdf")  mimeType = "application/pdf";
         if (ext === "java") mimeType = "text/x-java-source";
         if (ext === "rar")  mimeType = "application/vnd.rar";
 
         const metadata = { name: filename, mimeType };
-
         const boundary    = "-------3141592653589793";
         const delimiter   = `\r\n--${boundary}\r\n`;
         const closeDelimiter = `\r\n--${boundary}--`;
-
         const metadataPart = `${delimiter}Content-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}`;
         const filePart     = `${delimiter}Content-Type: ${mimeType}\r\n\r\n`;
-
         const reader = await fileBlob.arrayBuffer();
         const body = new Blob([metadataPart, filePart, new Uint8Array(reader), closeDelimiter], {
             type: `multipart/related; boundary=${boundary}`
@@ -160,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: { "Authorization": `Bearer ${accessToken}` },
             body
         });
-
         if (!res.ok) throw new Error(await res.text());
         return res.json();
     }
@@ -168,10 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function makeFilePublic(fileId) {
         await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}/permissions`, {
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${accessToken}`,
-                "Content-Type": "application/json"
-            },
+            headers: { "Authorization": `Bearer ${accessToken}`, "Content-Type": "application/json" },
             body: JSON.stringify({ role: "reader", type: "anyone" })
         });
     }
@@ -182,29 +172,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return newRef.key;
     }
 
-    // --- Manejo de subida ---
+    // Manejo de subida de archivo
     if (input) {
         input.addEventListener("change", async (e) => {
             const file = e.target.files[0];
             const tipo = document.getElementById("tipo").value;
+            if (!file) { status.textContent = "Selecciona un archivo válido."; return; }
 
-            if (!file) {
-                status.textContent = "Selecciona un archivo válido.";
-                return;
+            if (tipo === "resumenes" && file.type !== "application/pdf") {
+                status.textContent = "Solo se permiten PDFs para resúmenes."; return;
             }
-
-            if (tipo === "resumenes") {
-                if (file.type !== "application/pdf") {
-                    status.textContent = "Solo se permiten PDFs para resúmenes.";
-                    return;
-                }
-            }
-
             if (tipo === "ejercicios") {
                 const ext = file.name.split(".").pop().toLowerCase();
-                if (!["pdf", "java", "rar"].includes(ext)) {
-                    status.textContent = "Solo se permiten PDF, Java o RAR para ejercicios.";
-                    return;
+                if (!["pdf","java","rar"].includes(ext)) {
+                    status.textContent = "Solo se permiten PDF, Java o RAR para ejercicios."; return;
                 }
             }
 
@@ -215,116 +196,150 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 status.textContent = "⏳ Subiendo a Drive...";
                 progress.value = 10;
-
                 const driveFile = await uploadFileToDrive(file, nombre);
                 progress.value = 70;
-
                 await makeFilePublic(driveFile.id);
                 progress.value = 90;
 
                 const urlPreview  = `https://drive.google.com/file/d/${driveFile.id}/preview`;
                 const urlDownload = `https://drive.google.com/uc?export=download&id=${driveFile.id}`;
-
                 const ext = nombre.split(".").pop().toLowerCase();
                 const enlaceFinal = ["java","rar"].includes(ext) ? urlDownload : urlPreview;
 
-                const meta = {
-                    asignatura,
-                    tipo,
-                    tema,
-                    nombre,
-                    driveFileId: driveFile.id,
-                    urlPreview,
-                    urlDownload,
-                    size: file.size,
-                    createdAt: Date.now()
-                };
-                await saveMetadata(meta);
+                await saveMetadata({ asignatura, tipo, tema, nombre, driveFileId: driveFile.id, urlPreview, urlDownload, size: file.size, createdAt: Date.now() });
 
                 progress.value = 100;
                 status.textContent = "✅ Archivo subido correctamente.";
                 link.href = enlaceFinal;
                 link.style.display = "inline";
-
                 if (["java","rar"].includes(ext)) {
                     link.setAttribute("download", nombre);
                     link.removeAttribute("target");
                 }
-
-                cargarListaPDFs();
             } catch (err) {
                 status.textContent = "❌ Error: " + err.message;
             }
         });
     }
 
-    // --- Listar PDFs desde DB ---
+    // ============================================================
+    // TABLA DE ARCHIVOS CON FILTROS
+    // ============================================================
+    function inicializarFiltros() {
+        const searchInput  = document.getElementById("filterSearch");
+        const asigFilter   = document.getElementById("filterAsig");
+        const tipoFilter   = document.getElementById("filterTipo");
+
+        [searchInput, asigFilter, tipoFilter].forEach(el => {
+            if (el) el.addEventListener("input", renderTabla);
+        });
+    }
+
     async function cargarListaPDFs() {
-        const pdfList = document.getElementById("pdfList");
-        pdfList.innerHTML = "";
-
         const snapshot = await get(ref(db, "pdfs"));
-        if (!snapshot.exists()) return;
+        allPdfs = {};
+        if (snapshot.exists()) allPdfs = snapshot.val();
+        populateAsigFilter();
+        renderTabla();
+    }
 
-        const data = snapshot.val();
-        Object.entries(data).forEach(([id, pdf]) => {
-            const div = document.createElement("div");
-            div.className = "pdf-item";
+    function populateAsigFilter() {
+        const asigFilter = document.getElementById("filterAsig");
+        if (!asigFilter) return;
+        // Guardar valor seleccionado
+        const prev = asigFilter.value;
+        // Limpiar opciones dinámicas
+        asigFilter.querySelectorAll('option:not([value=""])').forEach(o => o.remove());
 
-            const a = document.createElement("a");
-            const ext = pdf.nombre.split(".").pop().toLowerCase();
+        const asigs = [...new Set(Object.values(allPdfs).map(p => p.asignatura))].sort();
+        asigs.forEach(a => {
+            const opt = document.createElement("option");
+            opt.value = a;
+            opt.textContent = a.charAt(0).toUpperCase() + a.slice(1);
+            asigFilter.appendChild(opt);
+        });
+        if (prev) asigFilter.value = prev;
+    }
+
+    function renderTabla() {
+        const tbody      = document.getElementById("pdfTbody");
+        const countEl    = document.getElementById("tableCount");
+        const searchVal  = (document.getElementById("filterSearch")?.value || "").toLowerCase();
+        const asigVal    = document.getElementById("filterAsig")?.value || "";
+        const tipoVal    = document.getElementById("filterTipo")?.value || "";
+
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        const entries = Object.entries(allPdfs).filter(([, pdf]) => {
+            const matchSearch = !searchVal ||
+                pdf.nombre?.toLowerCase().includes(searchVal) ||
+                pdf.tema?.toLowerCase().includes(searchVal) ||
+                pdf.asignatura?.toLowerCase().includes(searchVal);
+            const matchAsig = !asigVal || pdf.asignatura === asigVal;
+            const matchTipo = !tipoVal || pdf.tipo === tipoVal;
+            return matchSearch && matchAsig && matchTipo;
+        });
+
+        if (countEl) countEl.textContent = `${entries.length} archivo${entries.length !== 1 ? "s" : ""}`;
+
+        if (entries.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="table-empty">No se encontraron archivos.</td></tr>`;
+            return;
+        }
+
+        entries.forEach(([id, pdf]) => {
+            const ext = pdf.nombre?.split(".").pop().toLowerCase() || "";
             const enlaceFinal = ["java","rar"].includes(ext) ? pdf.urlDownload : pdf.urlPreview;
+            const tipoBadge   = pdf.tipo === "resumenes"
+                ? `<span class="badge badge-res">Resumen</span>`
+                : `<span class="badge badge-ej">Ejercicio</span>`;
+            const asigBadge = `<span class="badge badge-asig">${pdf.asignatura || "—"}</span>`;
 
-            a.href = enlaceFinal;
-            a.textContent = `${pdf.asignatura} - ${pdf.tipo} - ${pdf.tema} - ${pdf.nombre}`;
-            a.target = "_blank";
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>
+                    <a href="${enlaceFinal}" target="${["java","rar"].includes(ext) ? "_self" : "_blank"}"
+                       ${["java","rar"].includes(ext) ? `download="${pdf.nombre}"` : ""}>
+                        📄 ${pdf.nombre || "—"}
+                    </a>
+                </td>
+                <td>${asigBadge}</td>
+                <td>${tipoBadge}</td>
+                <td>${pdf.tema || "—"}</td>
+                <td>
+                    <div style="display:flex;gap:6px">
+                        <button class="tbl-btn tbl-btn-edit"   data-id="${id}">✏️ Editar</button>
+                        <button class="tbl-btn tbl-btn-delete" data-id="${id}">🗑️ Eliminar</button>
+                    </div>
+                </td>
+            `;
 
-            if (["java","rar"].includes(ext)) {
-                a.setAttribute("download", pdf.nombre);
-                a.removeAttribute("target");
-            }
-
-            // Botón Editar
-            const editBtn = document.createElement("button");
-            editBtn.textContent = "Editar";
-            editBtn.addEventListener("click", async () => {
+            // Editar
+            tr.querySelector('.tbl-btn-edit').addEventListener("click", async () => {
                 const nuevoTema   = prompt("Nuevo tema:", pdf.tema);
                 const nuevoNombre = prompt("Nuevo nombre:", pdf.nombre);
-
                 if (nuevoTema && nuevoNombre) {
                     try {
-                        const updatedMeta = {
-                            ...pdf,
-                            tema:      nuevoTema,
-                            nombre:    nuevoNombre,
-                            updatedAt: Date.now()
-                        };
-                        await set(ref(db, "pdfs/" + id), updatedMeta);
-                        alert("✅ PDF actualizado correctamente.");
-                        cargarListaPDFs();
-                    } catch (err) {
-                        alert("Error al actualizar: " + err.message);
-                    }
+                        await set(ref(db, "pdfs/" + id), { ...pdf, tema: nuevoTema, nombre: nuevoNombre, updatedAt: Date.now() });
+                        allPdfs[id] = { ...pdf, tema: nuevoTema, nombre: nuevoNombre };
+                        renderTabla();
+                    } catch (err) { alert("Error al actualizar: " + err.message); }
                 }
             });
 
-            // Botón Eliminar
-            const deleteBtn = document.createElement("button");
-            deleteBtn.textContent = "Eliminar";
-            deleteBtn.addEventListener("click", async () => {
+            // Eliminar
+            tr.querySelector('.tbl-btn-delete').addEventListener("click", async () => {
+                if (!confirm(`¿Eliminar "${pdf.nombre}"?`)) return;
                 try {
                     await set(ref(db, "pdfs/" + id), null);
-                    div.remove();
-                    alert("✅ PDF eliminado correctamente.");
-                } catch (err) {
-                    alert("Error al eliminar: " + err.message);
-                }
+                    delete allPdfs[id];
+                    populateAsigFilter();
+                    renderTabla();
+                } catch (err) { alert("Error al eliminar: " + err.message); }
             });
 
-            div.appendChild(a);
-            div.appendChild(editBtn);
-            div.appendChild(deleteBtn);
-            pdfList.appendChild(div);
+            tbody.appendChild(tr);
         });
     }
 });
