@@ -2,24 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Panel Admin - PDFSDAM</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
-    <script>
-        (function() {
-            const theme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', theme);
-        })();
-    </script>
+    <script src="js/theme.js"></script>
 </head>
 <body class="admin-body">
 
 <div class="admin-header">
-    <h2>⚙️ Panel de Administración PDFSDAM</h2>
+    <h2>⚙️ Panel Admin</h2>
     <div class="admin-header-actions">
-        <button id="themeToggle" class="admin-theme-btn" aria-label="Cambiar tema">🌙 Modo Oscuro</button>
-        <a href="index.html">🏠 Volver al inicio</a>
+        <button id="themeToggle" class="admin-theme-btn" aria-label="Cambiar tema">
+            <span class="theme-icon">🌙</span> <span class="theme-text">Oscuro</span>
+        </button>
+        <a href="index.html">🏠 Volver</a>
     </div>
 </div>
 
@@ -112,7 +109,7 @@
             </div>
         </div>
 
-        <div class="btn-row">
+        <div class="btn-row" style="margin-top: 1rem;">
             <button class="btn-admin" id="crearAsignaturaBtn">➕ Crear asignatura</button>
         </div>
         <p id="asignaturaStatus"></p>
@@ -120,7 +117,7 @@
 
     <!-- Gestión de PDFs en Tabla con Filtros -->
     <section class="admin-section" id="manageSection" style="display:none">
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 8px;">
             <h3 style="margin: 0; padding: 0; border: none;">Gestionar archivos subidos</h3>
             <span class="table-count" id="tableCount">0 archivos</span>
         </div>

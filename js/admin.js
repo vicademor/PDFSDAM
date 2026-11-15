@@ -38,31 +38,6 @@ let allPdfs = {};
 
 document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
-    // SISTEMA DE MODO CLARO / MODO OSCURO (ADMIN)
-    // ==========================================
-    const themeToggleBtn = document.getElementById('themeToggle');
-
-    function updateThemeButton(theme) {
-        if (themeToggleBtn) {
-            themeToggleBtn.textContent = theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
-        }
-    }
-
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        updateThemeButton(next);
-    }
-
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    updateThemeButton(currentTheme);
-
-    if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
-
-    // ==========================================
     // LOGIN & AUTH DRIVE
     // ==========================================
     let accessToken = getAccessTokenFromHash();

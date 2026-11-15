@@ -1,18 +1,19 @@
 /* =============================================
    PDFSDAM — Unified Design System
-   Modo Claro (Naranja) / Modo Oscuro (Azul Oscuro/Blanco)
+   Modo Claro (Naranja Cálido) / Modo Oscuro (Azul Oscuro y Blanco)
+   Totalmente responsive (Optimizado para Samsung Galaxy A34 5G)
    ============================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* =============================================
-   PALETAS Y VARIABLES (MODO CLARO POR DEFECTO)
+   VARIABLES — MODO CLARO (NARANJA CÁLIDO)
    ============================================= */
 :root {
-    --sidebar-width: 250px;
+    --sidebar-width: 260px;
     --index-width: 220px;
 
-    /* Tonalidades Modo Claro: Naranja */
+    /* Tonalidades Modo Claro */
     --primary-main:      #ff8c00;
     --primary-dark:      #e65100;
     --primary-deep:      #bf360c;
@@ -23,13 +24,20 @@
     --bg-page:           #f8f9fa;
     --bg-card:           #ffffff;
     --bg-card-hover:     #fffdfb;
-    --text-main:         #212529;
-    --text-muted:        #6c757d;
+    --text-main:         #1f2937;
+    --text-muted:        #6b7280;
     --border-color:      rgba(0, 0, 0, 0.08);
 
-    --toggle-btn-bg:     linear-gradient(135deg, #ffffff, #fff3eb);
-    --toggle-btn-color:  #e65100;
-    --toggle-btn-border: #ff8c00;
+    /* Botón Categorías */
+    --cat-btn-bg:        #ffffff;
+    --cat-btn-color:     #e65100;
+    --cat-btn-border:    #ff8c00;
+
+    /* Botón Modo Claro/Oscuro moderno */
+    --theme-btn-bg:      rgba(255, 255, 255, 0.92);
+    --theme-btn-color:   #e65100;
+    --theme-btn-border:  rgba(255, 140, 0, 0.35);
+    --theme-btn-shadow:  0 4px 14px rgba(230, 81, 0, 0.16);
 
     --sidebar-active-bg:    #ffffff;
     --sidebar-active-color: #e65100;
@@ -55,53 +63,60 @@
     --badge-asig-color:  #92400e;
 
     --shadow-sm:         0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md:         0 4px 16px rgba(230, 81, 0, 0.15);
+    --shadow-md:         0 4px 16px rgba(230, 81, 0, 0.16);
     --shadow-lg:         0 10px 30px rgba(230, 81, 0, 0.22);
 
     --transition:        0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* =============================================
-   TONALIDADES MODO OSCURO (AZUL OSCURO / BLANCO)
+   VARIABLES — MODO OSCURO (AZUL OSCURO Y BLANCO)
    ============================================= */
+html[data-theme="dark"],
+body[data-theme="dark"],
 [data-theme="dark"] {
     --primary-main:      #3b82f6;          /* Azul vibrante moderno */
     --primary-dark:      #1d4ed8;          /* Azul medio */
-    --primary-deep:      #1e3a8a;          /* Azul oscuro profundo */
-    --primary-light:     #60a5fa;          /* Azul suave */
+    --primary-deep:      #1e3a8a;          /* Azul marino profundo */
+    --primary-light:     #60a5fa;          /* Azul cielo */
     --primary-gradient:  linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
-    --sidebar-gradient:  linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    --sidebar-gradient:  linear-gradient(180deg, #090d16 0%, #111827 50%, #090d16 100%);
 
-    --bg-page:           #0a0e17;          /* Fondo oscuro azulado profundo */
-    --bg-card:           #141c2e;          /* Tarjetas azul oscuro */
-    --bg-card-hover:     #19243c;
-    --text-main:         #f8fafc;          /* Blanco nítido */
+    --bg-page:           #070a12;          /* Azul noche ultra oscuro */
+    --bg-card:           #111827;          /* Tarjetas azul oscuro */
+    --bg-card-hover:     #172033;
+    --text-main:         #f8fafc;          /* Blanco nítido y legible */
     --text-muted:        #94a3b8;          /* Gris azulado suave */
     --border-color:      rgba(255, 255, 255, 0.1);
 
-    --toggle-btn-bg:     linear-gradient(135deg, #1e293b, #0f172a);
-    --toggle-btn-color:  #60a5fa;
-    --toggle-btn-border: #3b82f6;
+    --cat-btn-bg:        #111827;
+    --cat-btn-color:     #60a5fa;
+    --cat-btn-border:    #3b82f6;
+
+    --theme-btn-bg:      rgba(17, 24, 39, 0.92);
+    --theme-btn-color:   #93c5fd;
+    --theme-btn-border:  rgba(59, 130, 246, 0.45);
+    --theme-btn-shadow:  0 4px 16px rgba(0, 0, 0, 0.45);
 
     --sidebar-active-bg:    #3b82f6;
     --sidebar-active-color: #ffffff;
-    --sidebar-item-hover:   rgba(59, 130, 246, 0.25);
-    --sidebar-dropdown-bg:  rgba(0, 0, 0, 0.28);
+    --sidebar-item-hover:   rgba(59, 130, 246, 0.22);
+    --sidebar-dropdown-bg:  rgba(0, 0, 0, 0.35);
 
     --welcome-gradient:  linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
     --welcome-btn-bg:    #ffffff;
     --welcome-btn-color: #1e3a8a;
 
-    --card-gradient:     linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    --card-gradient:     linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
     --card-text:         #ffffff;
 
     --modal-border-top:  #3b82f6;
 
-    --table-th-bg:       #1e293b;
+    --table-th-bg:       #172033;
     --table-th-color:    #93c5fd;
     --table-hover-bg:    #19243c;
 
-    --badge-res-bg:      #1e293b;
+    --badge-res-bg:      #172033;
     --badge-res-color:   #93c5fd;
     --badge-asig-bg:     #1e3a8a;
     --badge-asig-color:  #bfdbfe;
@@ -118,26 +133,31 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-page);
     color: var(--text-main);
     line-height: 1.6;
-    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
     transition: background-color var(--transition), color var(--transition);
 }
 
 /* =============================================
-   BOTÓN TOGGLE SIDEBAR (NUNCA SE SOBREPONE)
+   BOTÓN TOGGLE SIDEBAR (CATEGORÍAS)
    ============================================= */
 #toggleSidebar {
     position: fixed;
     top: 14px;
     left: 16px;
     z-index: 2200;
-    background: var(--toggle-btn-bg);
-    color: var(--toggle-btn-color);
-    border: 2px solid var(--toggle-btn-border);
+    background: var(--cat-btn-bg);
+    color: var(--cat-btn-color);
+    border: 1.5px solid var(--cat-btn-border);
     padding: 0.45rem 1rem;
     font-size: 0.88rem;
     font-weight: 700;
@@ -150,6 +170,8 @@ body {
     gap: 8px;
     transition: left var(--transition), transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
     user-select: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #toggleSidebar:hover {
@@ -157,41 +179,75 @@ body {
     box-shadow: var(--shadow-md);
 }
 
-body.sidebar-open #toggleSidebar {
-    left: calc(var(--sidebar-width) + 16px);
+@media (min-width: 1025px) {
+    body.sidebar-open #toggleSidebar {
+        left: calc(var(--sidebar-width) + 16px);
+    }
+}
+
+/* Backdrop móvil */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1400;
+    opacity: 0;
+    transition: opacity var(--transition);
+}
+
+@media (max-width: 1024px) {
+    body.sidebar-open .sidebar-backdrop {
+        display: block;
+        opacity: 1;
+    }
 }
 
 /* =============================================
-   BOTÓN MODO OSCURO / MODO CLARO
+   BOTÓN MODO OSCURO / CLARO (MODERNO & ELEGANTE)
    ============================================= */
 .theme-toggle-btn {
     position: fixed;
     top: 14px;
     right: 16px;
     z-index: 2200;
-    background: var(--toggle-btn-bg);
-    color: var(--toggle-btn-color);
-    border: 2px solid var(--toggle-btn-border);
+    background: var(--theme-btn-bg);
+    color: var(--theme-btn-color);
+    border: 1.5px solid var(--theme-btn-border);
     padding: 0.45rem 0.95rem;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     font-weight: 700;
     font-family: 'Inter', sans-serif;
     border-radius: 999px;
     cursor: pointer;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--theme-btn-shadow);
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     user-select: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .theme-toggle-btn:hover {
-    transform: scale(1.04);
+    transform: translateY(-2px) scale(1.03);
     box-shadow: var(--shadow-md);
 }
 
-/* Si hay índice derecho fijo en escritorio, desplazar el botón para no taparlo */
+.theme-toggle-btn .theme-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover .theme-icon {
+    transform: rotate(25deg);
+}
+
 body:has(#index-fixed) .theme-toggle-btn {
     right: calc(var(--index-width) + 16px);
 }
@@ -199,11 +255,11 @@ body:has(#index-fixed) .theme-toggle-btn {
 /* Botón de tema en sidebar */
 .sidebar-theme-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-sm);
-    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    padding: 0.65rem 1rem;
     font-size: 0.88rem;
     font-weight: 700;
     font-family: 'Inter', sans-serif;
@@ -212,12 +268,37 @@ body:has(#index-fixed) .theme-toggle-btn {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: background 0.2s;
-    margin-top: 6px;
+    transition: background 0.2s, transform 0.2s;
+    margin-top: 8px;
+    min-height: 42px;
 }
 
 .sidebar-theme-btn:hover {
-    background: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.24);
+    transform: translateY(-1px);
+}
+
+/* Botón de tema en Panel Admin */
+.admin-theme-btn {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    padding: 0.42rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s, transform 0.2s;
+    min-height: 38px;
+}
+
+.admin-theme-btn:hover {
+    background: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
 }
 
 /* =============================================
@@ -245,7 +326,7 @@ body.sidebar-open header {
 }
 
 header h1 {
-    font-size: 1.9rem;
+    font-size: 1.85rem;
     font-weight: 800;
     color: #ffffff;
     margin: 0;
@@ -267,10 +348,11 @@ header p {
 .container {
     display: flex;
     min-height: 100vh;
+    width: 100%;
 }
 
 /* =============================================
-   SIDEBAR
+   SIDEBAR (DRAWER ELEGANTE)
    ============================================= */
 .sidebar {
     width: var(--sidebar-width);
@@ -286,7 +368,7 @@ header p {
     z-index: 1500;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.25);
     transform: translateX(-100%);
     transition: transform var(--transition), background var(--transition);
 }
@@ -302,12 +384,12 @@ body.sidebar-open .sidebar {
 
 /* Logo de la sidebar */
 .sidebar-logo {
-    padding: 1.4rem 1.2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.2rem 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.12);
 }
 
 .sidebar-logo-text {
@@ -315,7 +397,7 @@ body.sidebar-open .sidebar {
     font-weight: 800;
     letter-spacing: 0.5px;
     color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-logo-badge {
@@ -326,6 +408,24 @@ body.sidebar-open .sidebar {
     padding: 2px 8px;
     border-radius: 999px;
     letter-spacing: 0.5px;
+}
+
+.sidebar-close-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+@media (max-width: 1024px) {
+    .sidebar-close-btn {
+        display: block;
+    }
 }
 
 /* Navegación dentro de sidebar */
@@ -346,11 +446,12 @@ body.sidebar-open .sidebar {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 0.65rem 0.9rem;
-    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.9rem;
+    border-radius: 8px;
     font-size: 0.92rem;
     font-weight: 600;
     transition: background 0.2s, transform 0.2s, color 0.2s;
+    min-height: 44px;
 }
 
 .sidebar-nav > li > a:hover {
@@ -375,8 +476,8 @@ body.sidebar-open .sidebar {
     background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-sm);
-    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    padding: 0.7rem 0.9rem;
     font-size: 0.92rem;
     font-weight: 700;
     font-family: 'Inter', sans-serif;
@@ -386,6 +487,7 @@ body.sidebar-open .sidebar {
     justify-content: space-between;
     transition: background 0.2s, border-color 0.2s;
     text-align: left;
+    min-height: 44px;
 }
 
 .dropdown-toggle:hover {
@@ -393,9 +495,9 @@ body.sidebar-open .sidebar {
 }
 
 .dropdown-toggle.open {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.22);
     border-color: rgba(255, 255, 255, 0.35);
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border-radius: 8px 8px 0 0;
 }
 
 .dropdown-label {
@@ -432,7 +534,7 @@ body.sidebar-open .sidebar {
     overflow: hidden;
     transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     background: var(--sidebar-dropdown-bg);
-    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    border-radius: 0 0 8px 8px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-top: none;
 }
@@ -446,11 +548,12 @@ body.sidebar-open .sidebar {
     display: block;
     color: #ffffff;
     text-decoration: none;
-    padding: 0.5rem 0.9rem 0.5rem 1.6rem;
+    padding: 0.6rem 0.9rem 0.6rem 1.6rem;
     font-size: 0.88rem;
     font-weight: 500;
     transition: background 0.2s, padding-left 0.2s, color 0.2s;
     border-left: 3px solid transparent;
+    min-height: 42px;
 }
 
 .dropdown-list li a:hover {
@@ -474,8 +577,8 @@ body.sidebar-open .sidebar {
 }
 
 .sidebar-sep {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    margin-top: 0.8rem;
     padding-top: 0.6rem;
 }
 
@@ -491,7 +594,8 @@ body.sidebar-open .sidebar {
     transition: margin-left var(--transition);
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.8rem;
+    width: 100%;
 }
 
 body:has(#index-fixed) .content {
@@ -502,14 +606,14 @@ body.sidebar-open .content {
     margin-left: calc(var(--sidebar-width) + 24px);
 }
 
-/* Secciones generales de contenido */
+/* Secciones generales */
 .content section {
     background: var(--bg-card);
     border-radius: var(--radius-md);
     padding: 1.8rem 2rem;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
-    transition: background var(--transition), border-color var(--transition);
+    transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
 .content section h2 {
@@ -637,10 +741,11 @@ body.sidebar-open .content {
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 700;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border-radius: 6px;
     text-align: center;
     margin-top: 4px;
+    display: block;
     transition: background 0.2s;
 }
 
@@ -649,7 +754,7 @@ body.sidebar-open .content {
 }
 
 /* =============================================
-   ÍNDICE LATERAL DERECHO
+   ÍNDICE LATERAL DERECHO (DESKTOP)
    ============================================= */
 #index-fixed {
     position: fixed;
@@ -703,10 +808,12 @@ body.sidebar-open .content {
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: none;
     justify-content: center;
     align-items: center;
     z-index: 2500;
+    padding: 16px;
 }
 
 .modal {
@@ -715,31 +822,40 @@ body.sidebar-open .content {
     padding: 2rem;
     border-radius: var(--radius-lg);
     max-width: 620px;
-    width: 90%;
-    max-height: 80vh;
+    width: 100%;
+    max-height: 85vh;
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
     border-top: 5px solid var(--modal-border-top);
     position: relative;
+    transition: background var(--transition), color var(--transition);
 }
 
 .modal-close {
     position: absolute;
     top: 14px;
     right: 16px;
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-muted);
     font-weight: bold;
     line-height: 1;
+    padding: 4px;
 }
 
 .modal-close:hover {
     color: var(--primary-main);
 }
 
+.modal-pdf-card {
+    display: block;
+    width: 100%;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
 /* =============================================
-   PANEL ADMIN (COMPARTE LA MISMA TONALIDAD)
+   PANEL ADMIN (MISMA TONALIDAD UNIFICADA)
    ============================================= */
 .admin-body {
     background: var(--bg-page);
@@ -757,6 +873,7 @@ body.sidebar-open .content {
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background var(--transition);
 }
 
 .admin-header h2 {
@@ -767,28 +884,29 @@ body.sidebar-open .content {
 .admin-header-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
-.admin-header a, .admin-theme-btn {
+.admin-header a {
     color: #ffffff;
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 700;
     background: rgba(255, 255, 255, 0.2);
-    padding: 0.4rem 1.1rem;
+    padding: 0.42rem 1.1rem;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.35);
-    cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     font-family: 'Inter', sans-serif;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
+    min-height: 38px;
 }
 
-.admin-header a:hover, .admin-theme-btn:hover {
+.admin-header a:hover {
     background: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
 }
 
 .admin-main {
@@ -798,6 +916,7 @@ body.sidebar-open .content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
 }
 
 .admin-section {
@@ -806,6 +925,7 @@ body.sidebar-open .content {
     padding: 1.8rem;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-color);
+    transition: background var(--transition), border-color var(--transition);
 }
 
 .admin-section h3 {
@@ -849,13 +969,14 @@ body.sidebar-open .content {
     padding: 0.65rem 0.85rem;
     width: 100%;
     border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.92rem;
+    font-size: 16px;
     background: var(--bg-card-hover);
     color: var(--text-main);
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    min-height: 44px;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
 }
 
 .admin-section input:focus,
@@ -868,17 +989,19 @@ body.sidebar-open .content {
 .btn-admin {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 0.7rem 1.6rem;
+    padding: 0.75rem 1.6rem;
     background: var(--primary-gradient);
     color: #ffffff;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     box-shadow: var(--shadow-sm);
+    min-height: 44px;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -892,16 +1015,17 @@ body.sidebar-open .content {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 0.8rem 1.6rem;
+    padding: 0.85rem 1.6rem;
     background: var(--bg-card);
     color: var(--text-main);
     border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
     width: 100%;
+    min-height: 48px;
     box-shadow: var(--shadow-sm);
     transition: background 0.2s, box-shadow 0.2s;
 }
@@ -921,14 +1045,15 @@ body.sidebar-open .content {
 }
 
 .table-filter {
-    padding: 0.55rem 0.85rem;
+    padding: 0.6rem 0.85rem;
     border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.88rem;
+    font-size: 15px;
     background: var(--bg-card-hover);
     color: var(--text-main);
     outline: none;
+    min-height: 42px;
 }
 
 .table-filter:focus {
@@ -944,7 +1069,8 @@ body.sidebar-open .content {
 
 .pdf-table-wrap {
     overflow-x: auto;
-    border-radius: var(--radius-sm);
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
 }
 
@@ -952,6 +1078,7 @@ body.sidebar-open .content {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.88rem;
+    min-width: 520px;
 }
 
 .pdf-table thead th {
@@ -1003,13 +1130,14 @@ body.sidebar-open .content {
 .badge-asig { background: var(--badge-asig-bg); color: var(--badge-asig-color); }
 
 .tbl-btn {
-    padding: 0.35rem 0.75rem;
+    padding: 0.4rem 0.8rem;
     border: none;
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 700;
     cursor: pointer;
+    min-height: 34px;
     transition: transform 0.15s;
 }
 
@@ -1021,35 +1149,182 @@ body.sidebar-open .content {
 .tbl-btn-delete { background: #fee2e2; color: #dc2626; }
 
 /* =============================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN — ENFOQUE SAMSUNG GALAXY A34 5G
    ============================================= */
 @media (max-width: 1024px) {
     header, body:has(#index-fixed) header {
         left: 0 !important;
         right: 0 !important;
+        width: 100% !important;
+        padding: 12px 14px 10px 14px;
+        height: auto;
     }
 
-    body.sidebar-open #toggleSidebar {
-        left: calc(var(--sidebar-width) + 14px);
+    header h1 {
+        font-size: 1.45rem;
+        letter-spacing: -0.3px;
     }
 
+    header p {
+        font-size: 0.82rem;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #toggleSidebar {
+        top: 10px;
+        left: 10px;
+        padding: 0.4rem 0.85rem;
+        font-size: 0.82rem;
+        border-width: 1.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Botón de tema en móvil: integrado arriba a la derecha sin solaparse */
     .theme-toggle-btn, body:has(#index-fixed) .theme-toggle-btn {
-        right: 14px !important;
+        top: 10px !important;
+        right: 10px !important;
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .theme-toggle-btn .theme-text {
+        display: none; /* En móvil muestra solo el icono del sol/luna para un look súper limpio */
+    }
+
+    .theme-toggle-btn .theme-icon {
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .sidebar {
+        width: 285px;
+        max-width: 82vw;
+        z-index: 2300;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.35);
     }
 
     .content, body:has(#index-fixed) .content {
         margin-left: 0 !important;
         margin-right: 0 !important;
-        padding-top: 110px;
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-top: 90px;
+        padding-left: 12px;
+        padding-right: 12px;
+        padding-bottom: 2rem;
+        gap: 1.4rem;
+        width: 100%;
     }
 
     #index-fixed {
-        display: none;
+        display: none !important;
+    }
+
+    .content section.welcome {
+        padding: 1.8rem 1.2rem;
+        border-radius: var(--radius-md);
+    }
+
+    .welcome-inner h2 {
+        font-size: 1.45rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-inner p {
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    .welcome-inner .btn-primary {
+        padding: 0.65rem 1.5rem;
+        font-size: 0.88rem;
+        margin-top: 1rem;
+        width: 100%;
+        max-width: 260px;
+    }
+
+    .content section {
+        padding: 1.4rem 1.2rem;
+        border-radius: var(--radius-md);
+    }
+
+    .content section h2 {
+        font-size: 1.15rem;
+    }
+
+    /* Galaxy A34 (384px - 412px): 2 columnas parejas de tarjetas */
+    .section-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .card, .topic-card {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 1rem 0.9rem;
+        font-size: 0.88rem;
+        border-radius: 10px;
+    }
+
+    .project-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .project-cards .card {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .modal {
+        width: 95%;
+        max-width: 380px;
+        padding: 1.6rem 1.2rem;
+        border-radius: var(--radius-md);
+    }
+
+    .admin-header {
+        padding: 10px 14px;
+    }
+
+    .admin-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .admin-main {
+        padding: 0 10px 2rem;
+        margin: 1.2rem auto;
+        gap: 1.2rem;
+    }
+
+    .admin-section {
+        padding: 1.2rem 1rem;
+        border-radius: var(--radius-md);
     }
 
     .form-row {
         grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table-filter, .table-search {
+        width: 100%;
+    }
+}
+
+@media (max-width: 360px) {
+    .section-cards {
+        grid-template-columns: 1fr;
+    }
+    header h1 {
+        font-size: 1.25rem;
     }
 }

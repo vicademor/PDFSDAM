@@ -27,39 +27,20 @@ const DAM1_ESTATICAS = {
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
-    // SISTEMA DE MODO CLARO / MODO OSCURO
-    // ==========================================
-    const themeToggleBtn = document.getElementById('themeToggle');
-    const sidebarThemeBtn = document.getElementById('sidebarThemeToggle');
-
-    function updateThemeButtons(theme) {
-        const isDark = theme === 'dark';
-        const label = isDark ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
-        if (themeToggleBtn)  themeToggleBtn.textContent  = label;
-        if (sidebarThemeBtn) sidebarThemeBtn.textContent = label;
-    }
-
-    function toggleTheme() {
-        const current = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-        updateThemeButtons(next);
-    }
-
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    updateThemeButtons(currentTheme);
-
-    if (themeToggleBtn)  themeToggleBtn.addEventListener('click', toggleTheme);
-    if (sidebarThemeBtn) sidebarThemeBtn.addEventListener('click', toggleTheme);
-
-    // ==========================================
-    // SIDEBAR TOGGLE (Aparece / Desaparece)
+    // SIDEBAR TOGGLE & BACKDROP (MÓVIL / DESKTOP)
     // ==========================================
     const toggleBtn = document.getElementById('toggleSidebar');
     const sidebar   = document.getElementById('sidebar');
     const mq        = window.matchMedia('(max-width: 1024px)');
+
+    // Crear overlay de fondo para móvil si no existe
+    let backdrop = document.getElementById('sidebarBackdrop');
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.id = 'sidebarBackdrop';
+        backdrop.className = 'sidebar-backdrop';
+        document.body.appendChild(backdrop);
+    }
 
     function applyInitialState() {
         const isDesktop = !mq.matches;
@@ -70,24 +51,32 @@ document.addEventListener("DOMContentLoaded", () => {
     applyInitialState();
     mq.addEventListener('change', applyInitialState);
 
+    function toggleSidebar() {
+        const isOpen = document.body.classList.contains('sidebar-open');
+        document.body.classList.toggle('sidebar-open', !isOpen);
+        toggleBtn?.setAttribute('aria-expanded', String(!isOpen));
+    }
+
+    function closeSidebar() {
+        document.body.classList.remove('sidebar-open');
+        toggleBtn?.setAttribute('aria-expanded', 'false');
+    }
+
     if (toggleBtn) {
         toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isOpen = document.body.classList.contains('sidebar-open');
-            document.body.classList.toggle('sidebar-open', !isOpen);
-            toggleBtn.setAttribute('aria-expanded', String(!isOpen));
+            toggleSidebar();
         });
     }
 
-    // Cerrar al pulsar fuera en móviles o pantallas pequeñas
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 1024 && document.body.classList.contains('sidebar-open')) {
-            if (sidebar && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-                document.body.classList.remove('sidebar-open');
-                toggleBtn?.setAttribute('aria-expanded', 'false');
-            }
-        }
-    });
+    // Cerrar al pulsar en el backdrop oscuro
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Botón de cerrar dentro de la sidebar (si existe)
+    const closeSidebarBtn = document.getElementById('closeSidebar');
+    if (closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+    }
 
     // ==========================================
     // DESPLEGABLES DE LA SIDEBAR (1º DAM y 2º DAM)
@@ -207,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 a.href = item.link;
                 a.textContent = item.name;
                 a.target = '_blank';
-                a.className = 'card';
+                a.className = 'card modal-pdf-card';
                 modalContent.appendChild(a);
             });
         }
