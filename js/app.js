@@ -27,30 +27,42 @@ const DAM1_ESTATICAS = {
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
-    // SIDEBAR TOGGLE (escritorio/móvil)
+    // SIDEBAR TOGGLE (Aparece / Desaparece)
     // ==========================================
     const toggleBtn = document.getElementById('toggleSidebar');
-    const mq = window.matchMedia('(max-width: 1024px)');
+    const sidebar   = document.getElementById('sidebar');
+    const mq        = window.matchMedia('(max-width: 1024px)');
 
     function applyInitialState() {
-        const open = !mq.matches;
-        document.body.classList.toggle('sidebar-open', open);
-        toggleBtn?.setAttribute('aria-expanded', String(open));
+        const isDesktop = !mq.matches;
+        document.body.classList.toggle('sidebar-open', isDesktop);
+        toggleBtn?.setAttribute('aria-expanded', String(isDesktop));
     }
 
     applyInitialState();
     mq.addEventListener('change', applyInitialState);
 
     if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const isOpen = document.body.classList.contains('sidebar-open');
             document.body.classList.toggle('sidebar-open', !isOpen);
             toggleBtn.setAttribute('aria-expanded', String(!isOpen));
         });
     }
 
+    // Cerrar al pulsar fuera en móviles o pantallas pequeñas
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 1024 && document.body.classList.contains('sidebar-open')) {
+            if (sidebar && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+                document.body.classList.remove('sidebar-open');
+                toggleBtn?.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+
     // ==========================================
-    // DESPLEGABLES DE LA SIDEBAR
+    // DESPLEGABLES DE LA SIDEBAR (1º DAM y 2º DAM)
     // ==========================================
     const asignaturaActual = document.body.dataset.asignatura || "";
     const dam1Ids = Object.keys(DAM1_ESTATICAS);
@@ -58,19 +70,22 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentDam = null;
     if (dam1Ids.includes(asignaturaActual)) currentDam = "1";
 
-    // Función toggle de un desplegable
     function setupToggle(btnEl, listEl) {
         if (!btnEl || !listEl) return;
-        btnEl.addEventListener('click', () => {
+        btnEl.addEventListener('click', (e) => {
+            e.stopPropagation();
             const isOpen = listEl.classList.contains('open');
-            // Cerrar todos
-            document.querySelectorAll('.dropdown-list.open').forEach(el => el.classList.remove('open'));
-            document.querySelectorAll('.dropdown-toggle.open').forEach(el => el.classList.remove('open'));
-            // Abrir el clickado si estaba cerrado
-            if (!isOpen) {
-                listEl.classList.add('open');
-                btnEl.classList.add('open');
-            }
+            // Cerrar el otro desplegable para mantenerlo ordenado
+            document.querySelectorAll('.dropdown-list.open').forEach(el => {
+                if (el !== listEl) el.classList.remove('open');
+            });
+            document.querySelectorAll('.dropdown-toggle.open').forEach(el => {
+                if (el !== btnEl) el.classList.remove('open');
+            });
+
+            // Toggle del actual
+            listEl.classList.toggle('open', !isOpen);
+            btnEl.classList.toggle('open', !isOpen);
         });
     }
 
@@ -88,14 +103,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setupToggle(dam1Btn, dam1List);
     setupToggle(dam2Btn, dam2List);
 
-    // Marcar enlace activo en 1º DAM estáticas
+    // Marcar enlace activo y abrir 1º DAM si estamos en una de sus asignaturas
     if (dam1List) {
         dam1List.querySelectorAll('a[data-asignatura-id]').forEach(a => {
             if (a.dataset.asignaturaId === asignaturaActual) {
                 a.classList.add('active');
             }
         });
-        if (currentDam === "1") openDropdown(dam1Btn, dam1List);
+        if (currentDam === "1") {
+            openDropdown(dam1Btn, dam1List);
+        }
     }
 
     // ==========================================
@@ -105,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!snapshot.exists()) return;
         const asignaturas = snapshot.val();
 
-        // Limpiar dinámicas previas
+        // Limpiar elementos dinámicos previos
         [dam1List, dam2List].forEach(list => {
             if (!list) return;
             list.querySelectorAll('.dynamic-asignatura').forEach(el => el.remove());
@@ -116,10 +133,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const targetList = curso === "2" ? dam2List : dam1List;
             if (!targetList) return;
 
-            // No duplicar estáticas
+            // Evitar duplicar estáticas de 1º DAM
             if (DAM1_ESTATICAS[id]) return;
 
-            // Quitar placeholder vacío
+            // Quitar mensaje de lista vacía
             const emptyMsg = targetList.querySelector('.empty-msg');
             if (emptyMsg) emptyMsg.remove();
 
@@ -131,8 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (asignaturaActual === id) {
                 a.classList.add('active');
-                if (curso === "2") openDropdown(dam2Btn, dam2List);
-                else               openDropdown(dam1Btn, dam1List);
+                if (curso === "2") {
+                    openDropdown(dam2Btn, dam2List);
+                } else {
+                    openDropdown(dam1Btn, dam1List);
+                }
             }
 
             li.appendChild(a);
@@ -141,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ==========================================
-    // MODAL
+    // MODAL DE RECURSOS
     // ==========================================
     const modalOverlay = document.getElementById('modalOverlay');
     const modalTitle   = document.getElementById('modalTitle');
