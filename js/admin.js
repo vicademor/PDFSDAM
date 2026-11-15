@@ -1,6 +1,6 @@
 // --- Configuración Firebase (solo para DB) ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+import { getDatabase, ref, push, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
@@ -39,14 +39,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let accessToken = getAccessTokenFromHash();
 
     const loginBtn = document.getElementById("loginBtn");
-    const input = document.getElementById("pdfInput");
+    const input    = document.getElementById("pdfInput");
     const progress = document.getElementById("uploadProgress");
-    const status = document.getElementById("uploadStatus");
-    const link = document.getElementById("downloadLink");
+    const status   = document.getElementById("uploadStatus");
+    const link     = document.getElementById("downloadLink");
 
     if (loginBtn) {
         loginBtn.addEventListener("click", () => {
-            window.location.href = getAuthUrl(); // redirige a Google OAuth
+            window.location.href = getAuthUrl();
         });
     }
 
@@ -55,27 +55,100 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("loginStatus").textContent = "✅ Login correcto con Google Drive.";
         document.getElementById("uploadSection").style.display = "block";
         document.getElementById("manageSection").style.display = "block";
+        document.getElementById("asignaturasSection").style.display = "block";
         cargarListaPDFs();
+        cargarAsignaturasEnSelect();
     }
 
-    // --- Subida a Drive ---
+    // ==========================================
+    // CARGAR ASIGNATURAS DINÁMICAS EN EL SELECT
+    // ==========================================
+    function cargarAsignaturasEnSelect() {
+        const selectEl = document.getElementById("asignatura");
+        if (!selectEl) return;
+
+        onValue(ref(db, "asignaturas"), snapshot => {
+            // Eliminar opciones dinámicas previas
+            selectEl.querySelectorAll('option.dynamic-opt').forEach(o => o.remove());
+
+            if (!snapshot.exists()) return;
+            const asignaturas = snapshot.val();
+
+            Object.entries(asignaturas).forEach(([id, data]) => {
+                // Evitar duplicar las 5 estáticas
+                const estaticas = ["programacion", "sistemas", "bases", "entornos", "lenguajes"];
+                if (estaticas.includes(id)) return;
+
+                const opt = document.createElement('option');
+                opt.value = id;
+                opt.textContent = data.nombre || id;
+                opt.className = 'dynamic-opt';
+                selectEl.appendChild(opt);
+            });
+        });
+    }
+
+    // ==========================================
+    // GESTIÓN DE ASIGNATURAS
+    // ==========================================
+    const crearAsignaturaBtn = document.getElementById("crearAsignaturaBtn");
+    const asignaturaStatus   = document.getElementById("asignaturaStatus");
+
+    if (crearAsignaturaBtn) {
+        crearAsignaturaBtn.addEventListener("click", async () => {
+            const id          = document.getElementById("asignaturaId").value.trim().toLowerCase().replace(/\s+/g, "-");
+            const nombre      = document.getElementById("asignaturaNombre").value.trim();
+            const curso       = parseInt(document.getElementById("asignaturaCurso").value, 10);
+            const descripcion = document.getElementById("asignaturaDesc").value.trim();
+
+            if (!id || !nombre) {
+                asignaturaStatus.textContent = "⚠️ El ID y el nombre son obligatorios.";
+                return;
+            }
+
+            if (!/^[a-z0-9-]+$/.test(id)) {
+                asignaturaStatus.textContent = "⚠️ El ID solo puede contener letras minúsculas, números y guiones.";
+                return;
+            }
+
+            try {
+                asignaturaStatus.textContent = "⏳ Guardando...";
+                await set(ref(db, "asignaturas/" + id), {
+                    id,
+                    nombre,
+                    curso,
+                    descripcion,
+                    createdAt: Date.now()
+                });
+                asignaturaStatus.textContent = `✅ Asignatura "${nombre}" creada correctamente.`;
+                document.getElementById("asignaturaId").value = "";
+                document.getElementById("asignaturaNombre").value = "";
+                document.getElementById("asignaturaDesc").value = "";
+            } catch (err) {
+                asignaturaStatus.textContent = "❌ Error: " + err.message;
+            }
+        });
+    }
+
+    // ==========================================
+    // SUBIDA A DRIVE
+    // ==========================================
     async function uploadFileToDrive(fileBlob, filename) {
         const ext = filename.split(".").pop().toLowerCase();
 
-        // Detectar MIME según extensión
-        let mimeType = "application/octet-stream"; // genérico por defecto
-        if (ext === "pdf") mimeType = "application/pdf";
+        let mimeType = "application/octet-stream";
+        if (ext === "pdf")  mimeType = "application/pdf";
         if (ext === "java") mimeType = "text/x-java-source";
-        if (ext === "rar") mimeType = "application/vnd.rar";
+        if (ext === "rar")  mimeType = "application/vnd.rar";
 
         const metadata = { name: filename, mimeType };
 
-        const boundary = "-------3141592653589793";
-        const delimiter = `\r\n--${boundary}\r\n`;
+        const boundary    = "-------3141592653589793";
+        const delimiter   = `\r\n--${boundary}\r\n`;
         const closeDelimiter = `\r\n--${boundary}--`;
 
         const metadataPart = `${delimiter}Content-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}`;
-        const filePart = `${delimiter}Content-Type: ${mimeType}\r\n\r\n`;
+        const filePart     = `${delimiter}Content-Type: ${mimeType}\r\n\r\n`;
 
         const reader = await fileBlob.arrayBuffer();
         const body = new Blob([metadataPart, filePart, new Uint8Array(reader), closeDelimiter], {
@@ -120,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Validaciones según tipo
             if (tipo === "resumenes") {
                 if (file.type !== "application/pdf") {
                     status.textContent = "Solo se permiten PDFs para resúmenes.";
@@ -137,8 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const asignatura = document.getElementById("asignatura").value;
-            const tema = document.getElementById("tema").value;
-            const nombre = document.getElementById("nombre").value || file.name;
+            const tema       = document.getElementById("tema").value;
+            const nombre     = document.getElementById("nombre").value || file.name;
 
             try {
                 status.textContent = "⏳ Subiendo a Drive...";
@@ -150,11 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 await makeFilePublic(driveFile.id);
                 progress.value = 90;
 
-                const urlPreview = `https://drive.google.com/file/d/${driveFile.id}/preview`;
+                const urlPreview  = `https://drive.google.com/file/d/${driveFile.id}/preview`;
                 const urlDownload = `https://drive.google.com/uc?export=download&id=${driveFile.id}`;
 
                 const ext = nombre.split(".").pop().toLowerCase();
-                // 👇 Si es java o rar, usar siempre el enlace de descarga
                 const enlaceFinal = ["java","rar"].includes(ext) ? urlDownload : urlPreview;
 
                 const meta = {
@@ -175,10 +246,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 link.href = enlaceFinal;
                 link.style.display = "inline";
 
-                // 👇 además puedes forzar descarga con atributo download
                 if (["java","rar"].includes(ext)) {
                     link.setAttribute("download", nombre);
-                    link.removeAttribute("target"); // no abrir en pestaña
+                    link.removeAttribute("target");
                 }
 
                 cargarListaPDFs();
@@ -207,26 +277,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             a.href = enlaceFinal;
             a.textContent = `${pdf.asignatura} - ${pdf.tipo} - ${pdf.tema} - ${pdf.nombre}`;
-            a.target = "_blank"; // por defecto abre en pestaña
+            a.target = "_blank";
 
             if (["java","rar"].includes(ext)) {
                 a.setAttribute("download", pdf.nombre);
-                a.removeAttribute("target"); // quita el target para forzar descarga
+                a.removeAttribute("target");
             }
 
             // Botón Editar
             const editBtn = document.createElement("button");
             editBtn.textContent = "Editar";
             editBtn.addEventListener("click", async () => {
-                const nuevoTema = prompt("Nuevo tema:", pdf.tema);
+                const nuevoTema   = prompt("Nuevo tema:", pdf.tema);
                 const nuevoNombre = prompt("Nuevo nombre:", pdf.nombre);
 
                 if (nuevoTema && nuevoNombre) {
                     try {
                         const updatedMeta = {
                             ...pdf,
-                            tema: nuevoTema,
-                            nombre: nuevoNombre,
+                            tema:      nuevoTema,
+                            nombre:    nuevoNombre,
                             updatedAt: Date.now()
                         };
                         await set(ref(db, "pdfs/" + id), updatedMeta);

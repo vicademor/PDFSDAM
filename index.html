@@ -7,22 +7,46 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="orange">
+    <meta name="theme-color" content="orange">
 </head>
 <body data-asignatura="index">
 <button id="toggleSidebar">☰ Categorías</button>
 
 <div class="container">
     <nav class="sidebar" id="sidebar">
-        <h2><br></h2>
-        <ul>
-            <li><a href="index.html" class="active">Inicio</a></li>
-            <li><a href="programacion.html">Programación</a></li>
-            <li><a href="sistemas.html">Sistemas Informáticos</a></li>
-            <li><a href="bases.html">Bases de Datos</a></li>
-            <li><a href="entornos.html">Entornos de Desarrollo</a></li>
-            <li><a href="lenguajes.html">Lenguajes de Marcas</a></li>
-            <li><a href="admin.html">Panel Admin</a></li>
+        <div class="sidebar-logo">PDFSDAM</div>
+        <ul class="sidebar-nav">
+            <li><a href="index.html" class="sidebar-home active">🏠 Inicio</a></li>
+
+            <!-- Desplegable 1º DAM -->
+            <li class="dropdown-item">
+                <button class="dropdown-toggle" data-target="dam1-list">
+                    <span>1º DAM</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <ul class="dropdown-list" id="dam1-list">
+                    <li><a href="programacion.html" data-asignatura-id="programacion">Programación</a></li>
+                    <li><a href="sistemas.html"     data-asignatura-id="sistemas">Sistemas Informáticos</a></li>
+                    <li><a href="bases.html"        data-asignatura-id="bases">Bases de Datos</a></li>
+                    <li><a href="entornos.html"     data-asignatura-id="entornos">Entornos de Desarrollo</a></li>
+                    <li><a href="lenguajes.html"    data-asignatura-id="lenguajes">Lenguajes de Marcas</a></li>
+                    <!-- asignaturas dinámicas de 1º DAM se insertan aquí por JS -->
+                </ul>
+            </li>
+
+            <!-- Desplegable 2º DAM -->
+            <li class="dropdown-item">
+                <button class="dropdown-toggle" data-target="dam2-list">
+                    <span>2º DAM</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <ul class="dropdown-list" id="dam2-list">
+                    <!-- asignaturas dinámicas de 2º DAM se insertan aquí por JS -->
+                    <li class="empty-msg">Sin asignaturas aún</li>
+                </ul>
+            </li>
+
+            <li class="sidebar-sep"><a href="admin.html" class="sidebar-admin">⚙️ Panel Admin</a></li>
         </ul>
     </nav>
 

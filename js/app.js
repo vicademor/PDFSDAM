@@ -16,13 +16,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// Asignaturas estáticas de 1º DAM (id -> { href, nombre })
+const DAM1_ESTATICAS = {
+    programacion: { href: "programacion.html", nombre: "Programación" },
+    sistemas:     { href: "sistemas.html",     nombre: "Sistemas Informáticos" },
+    bases:        { href: "bases.html",        nombre: "Bases de Datos" },
+    entornos:     { href: "entornos.html",     nombre: "Entornos de Desarrollo" },
+    lenguajes:    { href: "lenguajes.html",    nombre: "Lenguajes de Marcas" }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-    // --- Sidebar toggle con estado global ---
+
+    // ==========================================
+    // SIDEBAR TOGGLE (escritorio/móvil)
+    // ==========================================
     const toggleBtn = document.getElementById('toggleSidebar');
     const mq = window.matchMedia('(max-width: 1024px)');
 
     function applyInitialState() {
-        const open = !mq.matches; // abierto en desktop, cerrado en móvil
+        const open = !mq.matches;
         document.body.classList.toggle('sidebar-open', open);
         toggleBtn?.setAttribute('aria-expanded', String(open));
     }
@@ -38,16 +50,116 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- Modal ---
+    // ==========================================
+    // DESPLEGABLES DE LA SIDEBAR
+    // ==========================================
+    const asignaturaActual = document.body.dataset.asignatura || "";
+
+    // IDs de asignaturas estáticas de 1º DAM
+    const dam1Ids = Object.keys(DAM1_ESTATICAS);
+
+    // Determinar qué DAM contiene la asignatura actual
+    // (para asignaturas dinámicas se resolverá al cargar Firebase)
+    let currentDam = null;
+    if (dam1Ids.includes(asignaturaActual)) {
+        currentDam = "1";
+    }
+
+    // Función genérica para manejar toggle de un desplegable
+    function setupToggle(btnEl, listEl) {
+        if (!btnEl || !listEl) return;
+        btnEl.addEventListener('click', () => {
+            const isOpen = listEl.classList.contains('open');
+            listEl.classList.toggle('open', !isOpen);
+            btnEl.classList.toggle('open', !isOpen);
+        });
+    }
+
+    // Función para abrir un desplegable específico
+    function openDropdown(btnEl, listEl) {
+        if (!btnEl || !listEl) return;
+        listEl.classList.add('open');
+        btnEl.classList.add('open');
+    }
+
+    const dam1Btn  = document.querySelector('[data-target="dam1-list"]');
+    const dam1List = document.getElementById('dam1-list');
+    const dam2Btn  = document.querySelector('[data-target="dam2-list"]');
+    const dam2List = document.getElementById('dam2-list');
+
+    setupToggle(dam1Btn, dam1List);
+    setupToggle(dam2Btn, dam2List);
+
+    // Marcar enlace activo en 1º DAM estáticas y abrir si corresponde
+    if (dam1List) {
+        const links = dam1List.querySelectorAll('a[data-asignatura-id]');
+        links.forEach(a => {
+            if (a.dataset.asignaturaId === asignaturaActual) {
+                a.classList.add('active');
+            }
+        });
+        if (currentDam === "1") {
+            openDropdown(dam1Btn, dam1List);
+        }
+    }
+
+    // ==========================================
+    // CARGAR ASIGNATURAS DINÁMICAS DESDE FIREBASE
+    // ==========================================
+    onValue(ref(db, "asignaturas"), snapshot => {
+        if (!snapshot.exists()) return;
+
+        const asignaturas = snapshot.val();
+
+        // Limpiar mensajes vacíos previos de asignaturas dinámicas
+        [dam1List, dam2List].forEach(list => {
+            if (!list) return;
+            list.querySelectorAll('.dynamic-asignatura').forEach(el => el.remove());
+        });
+
+        Object.entries(asignaturas).forEach(([id, data]) => {
+            const curso = String(data.curso);
+            const targetList = curso === "2" ? dam2List : dam1List;
+            if (!targetList) return;
+
+            // No duplicar si ya está como estática
+            if (DAM1_ESTATICAS[id]) return;
+
+            // Quitar mensaje "Sin asignaturas aún" si existe
+            const emptyMsg = targetList.querySelector('.empty-msg');
+            if (emptyMsg) emptyMsg.remove();
+
+            const li = document.createElement('li');
+            li.className = 'dynamic-asignatura';
+            const a = document.createElement('a');
+            a.href = `asignatura.html?id=${encodeURIComponent(id)}`;
+            a.textContent = data.nombre || id;
+            if (asignaturaActual === id) {
+                a.classList.add('active');
+                // Abrir el desplegable del DAM correspondiente
+                if (curso === "2") {
+                    openDropdown(dam2Btn, dam2List);
+                } else {
+                    openDropdown(dam1Btn, dam1List);
+                }
+            }
+            li.appendChild(a);
+            targetList.appendChild(li);
+        });
+    });
+
+    // ==========================================
+    // MODAL
+    // ==========================================
     const modalOverlay = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
+    const modalTitle   = document.getElementById('modalTitle');
     const modalContent = document.getElementById('modalContent');
-    const modalClose = document.getElementById('modalClose');
+    const modalClose   = document.getElementById('modalClose');
 
     function abrirModal(asignaturas, card) {
         const asignatura = card.dataset.asignatura;
-        const section = card.dataset.section;
-        const topic = card.dataset.topic;
+        const section    = card.dataset.section;
+        const topic      = card.dataset.topic;
 
         modalTitle.textContent = card.textContent;
         modalContent.innerHTML = '';
@@ -68,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modalOverlay.style.display = 'flex';
     }
 
-    // 🔥 Escuchar cambios en tiempo real y reconstruir asignaturas
+    // Escuchar cambios en tiempo real y reconstruir cards de PDFs
     onValue(ref(db, "pdfs"), snapshot => {
         const asignaturas = {};
         if (!snapshot.exists()) return;
@@ -82,19 +194,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Detectar asignatura actual desde el body
-        const asignaturaActual = document.body.dataset.asignatura;
+        const asigActual = document.body.dataset.asignatura;
 
-        // Limpiar y reconstruir cards SOLO de la asignatura actual
         ["resumenes", "ejercicios"].forEach(tipo => {
             const section = document.querySelector(`#${tipo} .section-cards`);
             if (!section) return;
             section.innerHTML = "";
 
-            if (asignaturas[asignaturaActual] && asignaturas[asignaturaActual][tipo]) {
-                Object.keys(asignaturas[asignaturaActual][tipo]).forEach(tema => {
+            if (asignaturas[asigActual] && asignaturas[asigActual][tipo]) {
+                Object.keys(asignaturas[asigActual][tipo]).forEach(tema => {
                     const card = document.createElement("div");
                     card.className = "topic-card";
-                    card.dataset.asignatura = asignaturaActual;
+                    card.dataset.asignatura = asigActual;
                     card.dataset.section = tipo;
                     card.dataset.topic = tema;
                     card.textContent = tema;

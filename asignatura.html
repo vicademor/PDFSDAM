@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFSDAM - Asignatura</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="icon.png">
+</head>
+<body data-asignatura="">
+<button id="toggleSidebar">☰ Categorías</button>
+
+<div class="container">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-logo">PDFSDAM</div>
+        <ul class="sidebar-nav">
+            <li><a href="index.html" class="sidebar-home">🏠 Inicio</a></li>
+
+            <!-- Desplegable 1º DAM -->
+            <li class="dropdown-item">
+                <button class="dropdown-toggle" data-target="dam1-list">
+                    <span>1º DAM</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <ul class="dropdown-list" id="dam1-list">
+                    <li><a href="programacion.html" data-asignatura-id="programacion">Programación</a></li>
+                    <li><a href="sistemas.html"     data-asignatura-id="sistemas">Sistemas Informáticos</a></li>
+                    <li><a href="bases.html"        data-asignatura-id="bases">Bases de Datos</a></li>
+                    <li><a href="entornos.html"     data-asignatura-id="entornos">Entornos de Desarrollo</a></li>
+                    <li><a href="lenguajes.html"    data-asignatura-id="lenguajes">Lenguajes de Marcas</a></li>
+                    <!-- asignaturas dinámicas de 1º DAM se insertan aquí por JS -->
+                </ul>
+            </li>
+
+            <!-- Desplegable 2º DAM -->
+            <li class="dropdown-item">
+                <button class="dropdown-toggle" data-target="dam2-list">
+                    <span>2º DAM</span>
+                    <span class="arrow">▾</span>
+                </button>
+                <ul class="dropdown-list" id="dam2-list">
+                    <!-- asignaturas dinámicas de 2º DAM se insertan aquí por JS -->
+                    <li class="empty-msg">Sin asignaturas aún</li>
+                </ul>
+            </li>
+
+            <li class="sidebar-sep"><a href="admin.html" class="sidebar-admin">⚙️ Panel Admin</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <header>
+            <h1 id="pageTitle" style="color:whitesmoke">PDFSDAM</h1>
+            <p style="color: white"><b id="pageSubtitle">Cargando asignatura...</b></p>
+        </header>
+
+        <!-- Índice derecho fijo -->
+        <aside id="index-fixed">
+            <h2>Índice</h2>
+            <ul>
+                <li><a href="#resumenes">Resúmenes</a></li>
+                <li><a href="#ejercicios">Ejercicios</a></li>
+                <li><a href="#links">Páginas de interés</a></li>
+            </ul>
+        </aside>
+
+        <!-- Resúmenes -->
+        <section id="resumenes">
+            <h2>Resúmenes</h2>
+            <!-- 🔥 Cards dinámicas desde Firebase -->
+            <div class="section-cards"></div>
+        </section>
+
+        <!-- Ejercicios -->
+        <section id="ejercicios">
+            <h2>Ejercicios</h2>
+            <!-- 🔥 Cards dinámicas desde Firebase -->
+            <div class="section-cards"></div>
+        </section>
+
+        <!-- Links -->
+        <section id="links">
+            <h2>Páginas de interés</h2>
+            <div class="section-cards">
+                <!-- Los links estáticos se pueden añadir aquí si se desea -->
+                <p id="linksPlaceholder" style="color:#888;font-size:0.9rem;">No hay páginas de interés configuradas para esta asignatura.</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <div id="modalContent"><!-- PDFs se generan aquí --></div>
+    </div>
+</div>
+
+<!-- Script de inicialización de asignatura dinámica -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDPDlaizuJ8MdLhbEV9ny4utP098pqnmcg",
+        authDomain: "pdfsdam.firebaseapp.com",
+        databaseURL: "https://pdfsdam-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "pdfsdam",
+        appId: "1:836229684120:web:fd1dfcf58113c95fb129ed",
+        measurementId: "G-PXS4C0EZN9"
+    };
+
+    // Leer ID de la URL (?id=nombreasignatura)
+    const params = new URLSearchParams(window.location.search);
+    const asignaturaId = params.get("id") || "";
+
+    // Establecer data-asignatura en el body ANTES de que app.js lo lea
+    document.body.dataset.asignatura = asignaturaId;
+
+    if (!asignaturaId) {
+        document.getElementById("pageTitle").textContent = "Asignatura no encontrada";
+        document.getElementById("pageSubtitle").textContent = "No se especificó ningún ID de asignatura.";
+    } else {
+        // Cargar nombre desde Firebase
+        const app = initializeApp(firebaseConfig, "asignatura-page");
+        const db  = getDatabase(app);
+
+        try {
+            const snap = await get(ref(db, "asignaturas/" + asignaturaId));
+            if (snap.exists()) {
+                const data = snap.val();
+                document.title = `PDFSDAM - ${data.nombre}`;
+                document.getElementById("pageTitle").textContent    = `PDFSDAM - ${data.nombre}`;
+                document.getElementById("pageSubtitle").textContent = `Todos los recursos de ${data.nombre} en un solo lugar`;
+            } else {
+                document.getElementById("pageTitle").textContent    = `PDFSDAM - ${asignaturaId}`;
+                document.getElementById("pageSubtitle").textContent = "Asignatura dinámica";
+            }
+        } catch (e) {
+            console.error("Error cargando asignatura:", e);
+        }
+    }
+</script>
+
+<!-- 🔧 Importar app.js como módulo (carga sidebar + PDFs) -->
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
